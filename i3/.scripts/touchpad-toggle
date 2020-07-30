@@ -1,0 +1,10 @@
+#!/bin/bash
+touchpad="SynPS/2 Synaptics TouchPad"
+enabled=$(xinput list-props "${touchpad}" | grep -oP "^\s+Device Enabled \(\d+\):\s+\K\d")
+if [ $enabled -eq 1 ] ; then
+	xinput disable "$touchpad" 
+	notify-send "${touchpad} is disabled!"
+else
+	xinput enable "$touchpad"
+	notify-send "${touchpad} is enabled!"
+fi

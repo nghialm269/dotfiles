@@ -1,0 +1,15 @@
+#!/bin/bash
+
+line=$(echo -e 'Exit\n- Fullscreen\n- Active Window\n- Select Window\n- Select Area' | rofi -l 5 -matching fuzzy -dmenu -i -mesg "Take a screenshot..." -format 'i')
+if [ $line -eq 1 ] ; then
+	sleep 0.5 && maim | xclip -selection clipboard -t image/png 
+
+elif [ $line -eq 2 ] ; then
+	sleep 0.5 && maim -i $(xdotool getactivewindow) | xclip -selection clipboard -t image/png
+
+elif [ $line -eq 3 ] ; then
+	sleep 0.5 && maim -i $(xdotool selectwindow) | xclip -selection clipboard -t image/png
+
+elif [ $line -eq 4 ] ; then
+	maim -s --hidecursor | xclip -selection clipboard -t image/png
+fi

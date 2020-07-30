@@ -1,0 +1,72 @@
+#!/bin/bash
+
+# An easy script to record GIF based on [ffcast](https://github.com/lolilolicon/FFcast).
+# With default options, you draw a region to start recording, press 'q' to stop, and a `screenshot.gif` file will be saved to current directory. 
+# Read the [WIKI](https://github.com/lolilolicon/FFcast/wiki/GIF-Howto) and this script to learn more details.
+# Author of this script: huangyuyao@outlook.com
+
+STEP1=YES
+STEP2=YES
+FPS=10
+BASENAME=screenshot
+FFCAST_MODE=-s
+
+POSITIONAL=()
+while [[ $# -gt 0 ]]
+do
+key="$1"
+
+case $key in
+    --fps)
+    FPS="$2"
+    shift # past argument
+    shift # past value
+    ;;
+    -w)
+    FFCAST_MODE=-w
+    shift # past argument
+    ;;
+    --step1)
+    STEP2=NO
+    shift # past argument
+    ;;
+    --step2)
+    STEP1=NO
+    shift # past argument
+    ;;
+    *)    # unknown option
+    POSITIONAL+=("$1") # save it in an array for later
+    shift # past argument
+    ;;
+esac
+done
+set -- "${POSITIONAL[@]}" # restore positional parameters
+
+DELAY=$((100 / ${FPS}))
+ROOT=/tmp/screenshot-${BASENAME}
+
+if [[ -n $1 ]]; then
+    BASENAME=$1
+fi
+echo "FPS         = ${FPS}"
+echo "DELAY       = ${DELAY}"
+echo "STEP1       = ${STEP1}"
+echo "STEP2       = ${STEP2}"
+echo "BASENAME    = ${BASENAME}"
+echo "ROOT        = ${ROOT}"
+echo "FFCAST_MODE = ${FFCAST_MODE}"
+echo "[Note] Usage: $0 <out_name> [--step1] [--step2] [-w] [--fps <FPS>]."
+echo "[Note] select a region or window to start recording."
+echo "[Note] press 'q' to stop recording."
+
+set -euo pipefail
+IFS=$'\n\t'
+
+if [[ ${STEP1} == YES ]] ; then
+    rm -rf $ROOT && mkdir -p $ROOT
+    /usr/bin/ffcast ${FFCAST_MODE} rec -r ${FPS} ${ROOT}/IMG_%05d.png
+fi
+
+if [[ ${STEP2} == YES ]] ; then
+    /usr/bin/convert -delay ${DELAY} -loop 0 ${ROOT}/IMG_*.png -layers Optimize ${BASENAME}.gif
+fi

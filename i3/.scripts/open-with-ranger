@@ -1,0 +1,11 @@
+#!/usr/bin/bash
+
+path=${1#file://}
+
+echo "${path}" >> ~/open-with-ranger.log
+
+if [ -d "$path" ] ; then 
+	termite -e "ranger \"${path}\""
+else
+	termite -e "ranger --selectfile=\"${path}\""
+fi

@@ -1,0 +1,17 @@
+#!/usr/bin/bash
+
+if [ "$1" == "--fix-ttl" ] ; then
+	#https://github.com/oblique/create_ap/issues/151#issuecomment-205971929
+	ttl=$(iptables -L -vt mangle | grep -P "ap0.*?TTL increment by 1" | wc -l)
+	if [ $ttl -eq 0 ] ; then
+		echo -n "Increasing by 1 the TTL of the outgoing packet..."
+		iptables -w -t mangle -I PREROUTING -i ap0 -j TTL --ttl-inc 1
+		echo " DONE"
+		#echo -n "Increasing by 1 the TTL of the incoming packets..."
+		#iptables -w -t mangle -I PREROUTING -i wlp3s0 -j TTL --ttl-inc 1
+		#echo " DONE"
+	fi
+fi
+
+create_ap --config ~endlesslove/create_ap.cfg
+

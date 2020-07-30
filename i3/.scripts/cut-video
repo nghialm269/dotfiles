@@ -1,0 +1,103 @@
+#!/bin/bash
+
+usage() {
+	echo 'Options:'
+	echo
+	echo '	-h --help'
+	echo '		For this help.'
+	echo
+	echo
+	echo '	-i --input'
+	echo '		Input video file.'
+	echo
+	echo
+	echo '	-o --output'
+	echo '		Output video file.'
+	echo
+	echo
+	echo '	-s --start'
+	echo '		Starting time.'
+	echo '		E.g: to cut a part starting at 30s into the original file, use:'
+	echo '			--start 00:00:30'
+	echo
+	echo
+	echo '	-l --length'
+	echo '		Length of the output file.'
+	echo '		E.g: --length 00:00:05'
+	echo
+	echo
+	echo '		E.g: to cut out a part starting at 00:00:30 into the input file'
+	echo '		with a 5 seconds length:'
+	echo '			cut-video -s 00:00:30 -l 00:00:05 -i in.mp4 -o out.mp4'
+}
+
+for arg in "$@"; do
+	[[ "${arg:0:1}" = '-' ]] || continue
+	case "$1" in
+		-h | --help)
+			usage
+			break
+			;;
+
+		-i | --input)
+			input="$2"
+			shift 2
+			;;
+
+		-o | --output)
+			output="$2"
+			shift 2
+			;;
+
+		-s | --start)
+			starttime="$2"
+			shift 2
+			;;
+
+		-l | --length)
+			length="$2"
+			shift 2
+			;;
+
+		*)
+			echo "invalid argument: $1"
+			break
+			;;
+	esac
+done
+
+if [ -z "$input" ]
+then
+	echo 'No input file specified.'
+	exit 1
+fi
+
+if [ -z "$output" ]
+then
+	echo 'No output file specified.'
+	exit 1
+fi
+
+if [ -z "$starttime" ]
+then
+	echo 'No starting time specified.'
+	exit 1
+fi
+
+if [ -z "$length" ]
+then
+	echo 'No length specified.'
+	exit 1
+fi
+
+echo "$input"
+echo "$output"
+echo "$length"
+
+ffmpeg \
+	-ss "$starttime" \
+	-i "$input" \
+	-t "$length" \
+	-vcodec copy \
+	-acodec copy \
+	"$output"

@@ -1,0 +1,25 @@
+#!/bin/bash
+if [ -z "$1" ] ; then
+	line=$(echo -e 'Do nothing\nShutdown\nReboot\nLock\nSuspend' | rofi -l 5 -matching fuzzy -dmenu -i -mesg "Power Manager" -format 'i')
+else
+	if [ "$1" == "shutdown" ] ; then
+		line=1
+	elif [ "$1" == "reboot" ] ; then
+		line=2
+	elif [ "$1" == "lock" ] ; then
+		line=3
+	elif [ "$1" == "suspend" ] ; then
+		line=4
+	else
+		line=0
+	fi
+fi
+if [ $line -eq 1 ] ; then
+	shutdown now
+elif [ $line -eq 2 ] ; then
+	reboot
+elif [ $line -eq 3 ] ; then
+	betterlockscreen -l dim --off 5 -- -e
+elif [ $line -eq 4 ] ; then
+	systemctl suspend
+fi
