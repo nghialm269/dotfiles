@@ -29,9 +29,15 @@ command=$HOME/.config/i3blocks/i3blocks-contrib/$BLOCK_NAME/$BLOCK_NAME
 separator_block_width=10
 markup=none
 
-[apt-upgrades]
+#[apt-upgrades]
+#interval=7200
+#ALWAYS_PRINT=0
+
+[arch-update]
+markup=pango
 interval=7200
-ALWAYS_PRINT=0
+QUIET=true
+
 
 # Volume indicator
 #

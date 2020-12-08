@@ -32,10 +32,12 @@ floating_modifier $mod
 default_border pixel 3
 
 #exec --no-startup-id feh --bg-scale ~/.config/wallpaper.jpg
+exec --no-startup-id ~/.fehbg
 
 for_window [class="Goldendict"] floating enable
 for_window [class="Anki"] floating enable
 for_window [class="Fcitx-config-gtk3"] floating enable
+for_window [class="fcitx5-config-qt"] floating enable
 for_window [class="Firefox" window_role="About"] floating enable # firefox about dialog
 for_window [class="Nightly" window_role="About"] floating enable # firefox about dialog
 for_window [class="Firefox" window_role="Organizer"] floating enable # firefox library window
@@ -54,10 +56,11 @@ bindsym $mod+p move workspace to output right
 bindsym $mod+semicolon exec ~/.scripts/power lock
 exec xss-lock -- ~/.scripts/power lock
 exec xset dpms 600
-exec --no-startup-id nm-applet
+exec --no-startup-id cmst --minimized
 exec --no-startup-id blueman-applet
-exec --no-startup-id fcitx
+exec --no-startup-id fcitx5
 exec --no-startup-id redshift-gtk -l manual
+exec --no-startup-id udiskie --automount --notify --smart-tray
 # Run scratchpad alacritty
 exec --no-startup-id alacritty --class Scratchpad -e tmux new-session -A -s Scratchpad
 # -------------------------
@@ -209,7 +212,7 @@ bindsym $mod+r mode "resize"
 # Start i3bar to display a workspace bar (plus the system information i3status
 # finds out, if available)
 bar {
-	font pango:FuraCode Nerd Font 10
+	font pango:BlexMono Nerd Font 11
 	#status_command i3status
 	status_command i3blocks
 	position top
