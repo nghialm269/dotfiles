@@ -1,0 +1,7 @@
+configuration {
+	width: 40;
+	lines: 5;
+	bw: 0;
+	hide-scrollbar: true;
+	theme: "/usr/share/rofi/themes/gruvbox-dark-hard.rasi";
+}
