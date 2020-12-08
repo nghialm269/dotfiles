@@ -1,0 +1,7 @@
+#!/bin/sh
+
+for arg in "$@"; do
+    echo "[${arg}]" >> "/home/nghialm/test.txt"
+done
+[ "$1" = "-e" ] && shift
+[ $# -eq 0 ] && alacritty || alacritty -e "$@"
