@@ -1,0 +1,14 @@
+background-color=#1e1e2e
+text-color=#cdd6f4
+border-color=#89b4fa
+progress-color=over #313244
+layer=overlay
+default-timeout=8000
+ignore-timeout=0
+
+[urgency=high]
+border-color=#fab387
+
+[mode=away]
+default-timeout=0
+ignore-timeout=1
