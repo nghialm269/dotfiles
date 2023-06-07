@@ -70,6 +70,19 @@ require('lazy').setup({
   },
 
   {
+    "glepnir/lspsaga.nvim",
+    event = "LspAttach",
+    config = function()
+      require("lspsaga").setup({})
+    end,
+    dependencies = {
+      { "nvim-tree/nvim-web-devicons" },
+      --Please make sure you install markdown and markdown_inline parser
+      { "nvim-treesitter/nvim-treesitter" }
+    }
+  },
+
+  {
     -- Autocompletion
     'hrsh7th/nvim-cmp',
     dependencies = { 'hrsh7th/cmp-nvim-lsp', 'L3MON4D3/LuaSnip', 'saadparwaiz1/cmp_luasnip' },
@@ -168,11 +181,11 @@ require('lazy').setup({
       vim.g.tmux_navigator_no_mappings = 1
     end,
     config = function()
-      vim.keymap.set("n", "<M-h>", "<cmd>TmuxNavigateLeft<CR>", { desc = "Move to left window / tmux pane" })
-      vim.keymap.set("n", "<M-j>", "<cmd>TmuxNavigateDown<CR>", { desc = "Move to below window / tmux pane" })
-      vim.keymap.set("n", "<M-k>", "<cmd>TmuxNavigateUp<CR>", { desc = "Move to above window / tmux pane" })
-      vim.keymap.set("n", "<M-l>", "<cmd>TmuxNavigateRight<CR>", { desc = "Move to right window / tmux pane" })
-      vim.keymap.set("n", "<M-\\>", "<cmd>TmuxNavigatePrevious<CR>", { desc = "Move to previous window / tmux pane" })
+      vim.keymap.set("n", "<C-h>", "<cmd>TmuxNavigateLeft<CR>", { desc = "Move to left window / tmux pane" })
+      vim.keymap.set("n", "<C-j>", "<cmd>TmuxNavigateDown<CR>", { desc = "Move to below window / tmux pane" })
+      vim.keymap.set("n", "<C-k>", "<cmd>TmuxNavigateUp<CR>", { desc = "Move to above window / tmux pane" })
+      vim.keymap.set("n", "<C-l>", "<cmd>TmuxNavigateRight<CR>", { desc = "Move to right window / tmux pane" })
+      vim.keymap.set("n", "<C-\\>", "<cmd>TmuxNavigatePrevious<CR>", { desc = "Move to previous window / tmux pane" })
     end,
   },
 
@@ -391,6 +404,8 @@ require('nvim-treesitter.configs').setup {
   },
 }
 
+vim.keymap.set("n", "<BS>", ":b#<CR>", { silent = true })
+
 -- Diagnostic keymaps
 vim.keymap.set('n', '[d', vim.diagnostic.goto_prev, { desc = "Go to previous diagnostic message" })
 vim.keymap.set('n', ']d', vim.diagnostic.goto_next, { desc = "Go to next diagnostic message" })
@@ -408,9 +423,12 @@ local on_attach = function(client, bufnr)
     vim.keymap.set('n', keys, func, { buffer = bufnr, desc = desc })
   end
 
-  nmap('<localleader>lrn', vim.lsp.buf.rename, '[R]e[n]ame')
-  nmap('<localleader>lca', vim.lsp.buf.code_action, '[C]ode [A]ction')
-  nmap('<M-Enter>', vim.lsp.buf.code_action, '[C]ode [A]ction')
+  -- nmap('<localleader>lrn', vim.lsp.buf.rename, '[R]e[n]ame')
+  -- nmap('<localleader>lca', vim.lsp.buf.code_action, '[C]ode [A]ction')
+  nmap('<C-Enter>', vim.lsp.buf.code_action, '[C]ode [A]ction')
+
+  nmap('<localleader>lrn', "<cmd>Lspsaga rename ++project<CR>")
+  nmap('<localleader>lca', "<cmd>Lspsaga code_action<CR>", '[C]ode [A]ction')
 
   nmap('gd', vim.lsp.buf.definition, '[G]oto [D]efinition')
   nmap('gr', require('telescope.builtin').lsp_references, '[G]oto [R]eferences')
