@@ -1,11 +1,15 @@
-vim.keymap.set("n", "<space>", "<Nop>")
---  NOTE: Must happen before plugins are required (otherwise wrong leader will be used)
-vim.g.mapleader = ','
-vim.g.maplocalleader = ' '
-
 vim.opt.tabstop = 4
 vim.opt.softtabstop = 4
 vim.opt.shiftwidth = 4
+
+vim.opt.title = true
+
+vim.opt.ignorecase = true
+vim.opt.smartcase = true
+
+vim.opt.scrolloff = 9
+vim.opt.sidescrolloff = 10
+vim.opt.sidescroll = 1
 
 vim.opt.list = true -- invisible chars
 vim.opt.listchars = {
@@ -17,6 +21,37 @@ vim.opt.listchars = {
   lead = "⋅",
   multispace = "⋅",
 }
+
+vim.opt.splitbelow = true
+vim.opt.splitright = true
+vim.opt.eadirection = "hor"
+
+vim.opt.mouse = "a"
+vim.opt.mousefocus = true
+
+vim.opt.signcolumn = "yes:2"
+
+vim.opt.showmode = false
+
+vim.opt.virtualedit = "block" -- allow cursor to move where there is no text in visual block mode
+
+vim.opt.termguicolors = true
+
+vim.opt.undofile = true
+
+vim.opt.breakindent = true
+
+vim.opt.updatetime = 300
+vim.opt.timeoutlen = 400
+vim.opt.ttimeoutlen = 20
+
+vim.opt.cursorline = true
+vim.opt.number = true
+
+vim.keymap.set({ 'n', 'v' }, '<Space>', '<Nop>', { silent = true })
+--  NOTE: Must happen before plugins are required (otherwise wrong leader will be used)
+vim.g.mapleader = ','
+vim.g.maplocalleader = ' '
 
 
 -- Install package manager
@@ -62,7 +97,14 @@ require('lazy').setup({
 
       -- Useful status updates for LSP
       -- NOTE: `opts = {}` is the same as calling `require('fidget').setup({})`
-      { 'j-hui/fidget.nvim', opts = {} },
+      {
+        'j-hui/fidget.nvim',
+        opts = {
+          window = {
+            blend = 0,
+          },
+        }
+      },
 
       -- Additional lua configuration, makes nvim stuff amazing!
       'folke/neodev.nvim',
@@ -73,7 +115,11 @@ require('lazy').setup({
     "glepnir/lspsaga.nvim",
     event = "LspAttach",
     config = function()
-      require("lspsaga").setup({})
+      require("lspsaga").setup({
+        ui = {
+          kind = require("catppuccin.groups.integrations.lsp_saga").custom_kind(),
+        },
+      })
     end,
     dependencies = {
       { "nvim-tree/nvim-web-devicons" },
@@ -89,7 +135,7 @@ require('lazy').setup({
   },
 
   -- Useful plugin to show you pending keybinds.
-  { 'folke/which-key.nvim',          opts = {} },
+  { 'folke/which-key.nvim',    opts = {} },
   {
     -- Adds git releated signs to the gutter, as well as utilities for managing changes
     'lewis6991/gitsigns.nvim',
@@ -105,12 +151,15 @@ require('lazy').setup({
     },
   },
 
+  { "sitiom/nvim-numbertoggle" },
+
   {
     -- Set lualine as statusline
     'nvim-lualine/lualine.nvim',
     -- See `:help lualine.txt`
     opts = {
       options = {
+        theme = "catppuccin",
         icons_enabled = false,
         component_separators = '|',
         section_separators = '',
@@ -185,6 +234,9 @@ require('lazy').setup({
       vim.keymap.set("n", "<C-j>", "<cmd>TmuxNavigateDown<CR>", { desc = "Move to below window / tmux pane" })
       vim.keymap.set("n", "<C-k>", "<cmd>TmuxNavigateUp<CR>", { desc = "Move to above window / tmux pane" })
       vim.keymap.set("n", "<C-l>", "<cmd>TmuxNavigateRight<CR>", { desc = "Move to right window / tmux pane" })
+      vim.keymap.set("n", "<C-S-l>", "<Cmd>nohlsearch<Bar>diffupdate<Bar>normal! <C-L><CR>",
+        { desc = "Clear search highlight" })
+      --
       vim.keymap.set("n", "<C-\\>", "<cmd>TmuxNavigatePrevious<CR>", { desc = "Move to previous window / tmux pane" })
     end,
   },
@@ -242,44 +294,11 @@ require('lazy').setup({
 -- [[ Setting options ]]
 -- See `:help vim.o`
 
-vim.opt.splitbelow = true
-vim.opt.splitright = true
-vim.opt.eadirection = "hor"
 
--- Make line numbers default
-vim.wo.number = true
-
--- Enable mouse mode
-vim.o.mouse = 'a'
-
--- Sync clipboard between OS and Neovim.
---  Remove this option if you want your OS clipboard to remain independent.
---  See `:help 'clipboard'`
--- vim.o.clipboard = 'unnamedplus'
-
--- Enable break indent
-vim.o.breakindent = true
-
--- Save undo history
-vim.o.undofile = true
-
--- Case insensitive searching UNLESS /C or capital in search
-vim.o.ignorecase = true
-vim.o.smartcase = true
-
--- Keep signcolumn on by default
-vim.wo.signcolumn = 'yes'
-
--- Decrease update time
-vim.o.updatetime = 250
-vim.o.timeout = true
-vim.o.timeoutlen = 300
 
 -- Set completeopt to have a better completion experience
 vim.o.completeopt = 'menuone,noselect'
 
--- NOTE: You should make sure your terminal supports this
-vim.o.termguicolors = true
 
 -- [[ Basic Keymaps ]]
 
@@ -342,9 +361,12 @@ require('nvim-treesitter.configs').setup {
   ensure_installed = { 'c', 'cpp', 'go', 'lua', 'python', 'rust', 'tsx', 'typescript', 'vimdoc', 'vim' },
 
   -- Autoinstall languages that are not installed. Defaults to false (but you can change for yourself!)
-  auto_install = false,
+  auto_install = true,
 
-  highlight = { enable = true },
+  highlight = {
+    enable = true,
+    additional_vim_regex_highlighting = false
+  },
   indent = { enable = true, disable = { 'python' } },
   incremental_selection = {
     enable = true,
@@ -423,9 +445,18 @@ local on_attach = function(client, bufnr)
     vim.keymap.set('n', keys, func, { buffer = bufnr, desc = desc })
   end
 
+  local imap = function(keys, func, desc)
+    if desc then
+      desc = 'LSP: ' .. desc
+    end
+
+    vim.keymap.set('i', keys, func, { buffer = bufnr, desc = desc })
+  end
+
   -- nmap('<localleader>lrn', vim.lsp.buf.rename, '[R]e[n]ame')
   -- nmap('<localleader>lca', vim.lsp.buf.code_action, '[C]ode [A]ction')
   nmap('<C-Enter>', vim.lsp.buf.code_action, '[C]ode [A]ction')
+  imap('<C-Enter>', vim.lsp.buf.code_action, '[C]ode [A]ction')
 
   nmap('<localleader>lrn', "<cmd>Lspsaga rename ++project<CR>")
   nmap('<localleader>lca', "<cmd>Lspsaga code_action<CR>", '[C]ode [A]ction')
@@ -572,5 +603,7 @@ cmp.event:on(
   'confirm_done',
   cmp_autopairs.on_confirm_done()
 )
+
+-- vim: ts=2 sts=2 sw=2 et
 
 -- vim: ts=2 sts=2 sw=2 et

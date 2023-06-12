@@ -23,7 +23,32 @@ set $menu onagre | xargs swaymsg exec --
 ### Output configuration
 #
 # Default wallpaper (more resolutions are available in /usr/share/backgrounds/sway/)
+
+set $extMonitor "Dell Inc. DELL U2723QE BGVD2P3"
+set $laptopMonitor eDP-1
+
 output * bg ~/PbPYzVD.jpg fill
+# output DP-1 mode 2560x1440@59.951Hz
+output $laptopMonitor pos 0 0
+output $extMonitor pos 1920 0 scale 1.5
+# clamshell mode
+bindswitch --reload --locked lid:on output $laptopMonitor disable
+bindswitch --reload --locked lid:off output $laptopMonitor enable
+exec_always 'if grep -q open /proc/acpi/button/lid/LID/state; then swaymsg output $laptopMonitor enable; else swaymsg output $laptopMonitor disable; fi'
+# exec_always 'notify-send $extMonitor $laptopMonitor'
+
+# assign workspace to monitor
+workspace 1 output $laptopMonitor $extMonitor
+workspace 2 output $extMonitor $laptopMonitor
+workspace 3 output $extMonitor $laptopMonitor
+workspace 4 output $extMonitor $laptopMonitor
+workspace 5 output $extMonitor $laptopMonitor
+workspace 6 output $extMonitor $laptopMonitor
+workspace 7 output $extMonitor $laptopMonitor
+workspace 8 output $extMonitor $laptopMonitor
+workspace 9 output $extMonitor $laptopMonitor
+workspace 10 output $extMonitor $laptopMonitor
+
 #
 # Example configuration:
 #

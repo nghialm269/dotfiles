@@ -594,7 +594,12 @@ import:
 # If the same trigger is assigned to multiple actions, all of them are executed
 # in the order they were defined in.
 key_bindings:
-  - { key: J, mods: Control|Shift, chars: "\x1b[74;5u" }
+  - { key: J,      mods: Control|Shift, chars: "\x1b[74;6u" }
+  - { key: L,      mods: Control|Shift, chars: "\x1b[76;6u" }
+  - { key: Return, mods: Shift,         chars: "\x1b[13;2u" }
+  - { key: Return, mods: Control,       chars: "\x1b[13;5u" }
+
+
   #- { key: Paste,                                action: Paste          }
   #- { key: Copy,                                 action: Copy           }
   #- { key: L,         mods: Control,             action: ClearLogNotice }
