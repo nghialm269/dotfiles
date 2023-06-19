@@ -22,6 +22,7 @@ return {
           lsp_saga = true,
           mason = true,
           neotree = true,
+          neotest = true,
           cmp = true,
           native_lsp = {
             enabled = true,

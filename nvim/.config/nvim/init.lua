@@ -99,6 +99,7 @@ require('lazy').setup({
       -- NOTE: `opts = {}` is the same as calling `require('fidget').setup({})`
       {
         'j-hui/fidget.nvim',
+        branch = 'legacy',
         opts = {
           window = {
             blend = 0,
@@ -274,6 +275,134 @@ require('lazy').setup({
     -- build = ':lua require("go.install").update_all_sync()' -- if you need to install/update all binaries
   },
 
+  {
+    "nvim-neotest/neotest",
+    dependencies = {
+      "nvim-lua/plenary.nvim",
+      "nvim-treesitter/nvim-treesitter",
+      -- "antoinemadec/FixCursorHold.nvim",
+    },
+    opts = {
+      -- Can be a list of adapters like what neotest expects,
+      -- or a list of adapter names,
+      -- or a table of adapter names, mapped to adapter configs.
+      -- The adapter will then be automatically loaded with the config.
+      adapters = {},
+      -- Example for loading neotest-go with a custom config
+      -- adapters = {
+      --   ["neotest-go"] = {
+      --     args = { "-tags=integration" },
+      --   },
+      -- },
+      status = { virtual_text = true },
+      output = { open_on_run = true },
+      -- quickfix = {
+      --   open = function()
+      --     if require("lazyvim.util").has("trouble.nvim") then
+      --       vim.cmd("Trouble quickfix")
+      --     else
+      --       vim.cmd("copen")
+      --     end
+      --   end,
+      -- },
+    },
+    config = function(_, opts)
+      local neotest_ns = vim.api.nvim_create_namespace("neotest")
+      vim.diagnostic.config({
+        virtual_text = {
+          format = function(diagnostic)
+            -- Replace newline and tab characters with space for more compact diagnostics
+            local message = diagnostic.message:gsub("\n", " "):gsub("\t", " "):gsub("%s+", " "):gsub("^%s+", "")
+            return message
+          end,
+        },
+      }, neotest_ns)
+
+      if opts.adapters then
+        local adapters = {}
+        for name, config in pairs(opts.adapters or {}) do
+          if type(name) == "number" then
+            if type(config) == "string" then
+              config = require(config)
+            end
+            adapters[#adapters + 1] = config
+          elseif config ~= false then
+            local adapter = require(name)
+            if type(config) == "table" and not vim.tbl_isempty(config) then
+              local meta = getmetatable(adapter)
+              if adapter.setup then
+                adapter.setup(config)
+              elseif meta and meta.__call then
+                adapter(config)
+              else
+                error("Adapter " .. name .. " does not support setup")
+              end
+            end
+            adapters[#adapters + 1] = adapter
+          end
+        end
+        opts.adapters = adapters
+      end
+
+      require("neotest").setup(opts)
+    end,
+    -- stylua: ignore
+    keys = {
+      {
+        "<localleader>tf",
+        function() require("neotest").run.run(vim.fn.expand("%")) end,
+        desc =
+        "Run File"
+      },
+      {
+        "<localleader>tp",
+        function() require("neotest").run.run(vim.loop.cwd()) end,
+        desc =
+        "Run All Test Files"
+      },
+      {
+        "<localleader>tt",
+        function() require("neotest").run.run() end,
+        desc =
+        "Run Nearest"
+      },
+      {
+        "<localleader>ts",
+        function() require("neotest").summary.toggle() end,
+        desc =
+        "Toggle Summary"
+      },
+      {
+        "<localleader>to",
+        function() require("neotest").output.open({ enter = true, auto_close = true }) end,
+        desc =
+        "Show Output"
+      },
+      {
+        "<localleader>tO",
+        function() require("neotest").output_panel.toggle() end,
+        desc =
+        "Toggle Output Panel"
+      },
+      {
+        "<localleader>tS",
+        function() require("neotest").run.stop() end,
+        desc =
+        "Stop"
+      },
+    },
+  },
+
+  {
+    "andythigpen/nvim-coverage",
+    requires = "nvim-lua/plenary.nvim",
+    cmd = { 'Coverage', 'CoverageLoad', 'CoverageLoadLcov', 'CoverageToggle', 'CoverageShow', 'CoverageHide',
+      'CoverageClear', 'CoverageSummary', },
+    opts = {
+      auto_reload = true,
+    },
+  },
+
   -- NOTE: Next Step on Your Neovim Journey: Add/Configure additional "plugins" for kickstart
   --       These are some example plugins that I've included in the kickstart repository.
   --       Uncomment any of the lines below to enable them.
@@ -289,6 +418,7 @@ require('lazy').setup({
   --    An additional note is that if you only copied in the `init.lua`, you can just comment this line
   --    to get rid of the warning telling you that there are not plugins in `lua/custom/plugins/`.
   { import = 'plugins' },
+  { import = 'plugins.lang' },
 }, {})
 
 -- [[ Setting options ]]
@@ -470,7 +600,7 @@ local on_attach = function(client, bufnr)
 
   -- See `:help K` for why this keymap
   nmap('K', vim.lsp.buf.hover, 'Hover Documentation')
-  nmap('<C-k>', vim.lsp.buf.signature_help, 'Signature Documentation')
+  -- nmap('<C-k>', vim.lsp.buf.signature_help, 'Signature Documentation')
 
   -- Lesser used LSP functionality
   nmap('gD', vim.lsp.buf.declaration, '[G]oto [D]eclaration')
@@ -557,8 +687,6 @@ mason_lspconfig.setup_handlers {
 local cmp = require 'cmp'
 local luasnip = require 'luasnip'
 
-luasnip.config.setup {}
-
 cmp.setup {
   snippet = {
     expand = function(args)
@@ -603,7 +731,5 @@ cmp.event:on(
   'confirm_done',
   cmp_autopairs.on_confirm_done()
 )
-
--- vim: ts=2 sts=2 sw=2 et
 
 -- vim: ts=2 sts=2 sw=2 et
