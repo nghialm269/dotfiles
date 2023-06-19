@@ -5,6 +5,7 @@ progress-color=over #313244
 layer=overlay
 default-timeout=8000
 ignore-timeout=0
+icon-path=/usr/share/icons/Papirus
 
 [urgency=high]
 border-color=#fab387
@@ -12,3 +13,6 @@ border-color=#fab387
 [mode=away]
 default-timeout=0
 ignore-timeout=1
+
+[app-name=volume]
+progress-color=over #6c7086
