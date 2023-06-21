@@ -495,11 +495,27 @@ require('nvim-treesitter.configs').setup {
 
   highlight = {
     enable = true,
+    disable = function(lang, buf)
+      if lang == "vim" then
+        local bufname = vim.api.nvim_buf_get_name(buf)
+        return string.match(bufname, "%[Command Line%]")
+      else
+        return false
+      end
+    end,
     additional_vim_regex_highlighting = false
   },
   indent = { enable = true, disable = { 'python' } },
   incremental_selection = {
     enable = true,
+    disable = function(lang, buf)
+      if lang == "vim" then
+        local bufname = vim.api.nvim_buf_get_name(buf)
+        return string.match(bufname, "%[Command Line%]")
+      else
+        return false
+      end
+    end,
     keymaps = {
       -- init_selection = '<c-space>',
       -- node_incremental = '<c-space>',
