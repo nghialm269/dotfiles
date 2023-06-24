@@ -29,7 +29,7 @@ vim.opt.eadirection = "hor"
 vim.opt.mouse = "a"
 vim.opt.mousefocus = true
 
-vim.opt.signcolumn = "yes:2"
+vim.opt.signcolumn = "yes:3"
 
 vim.opt.showmode = false
 
@@ -115,18 +115,46 @@ require('lazy').setup({
   {
     "glepnir/lspsaga.nvim",
     event = "LspAttach",
-    config = function()
-      require("lspsaga").setup({
-        ui = {
-          kind = require("catppuccin.groups.integrations.lsp_saga").custom_kind(),
-        },
-      })
-    end,
     dependencies = {
       { "nvim-tree/nvim-web-devicons" },
       --Please make sure you install markdown and markdown_inline parser
       { "nvim-treesitter/nvim-treesitter" }
-    }
+    },
+    config = function()
+      require('lspsaga').setup({
+        ui = {
+          kind = require("catppuccin.groups.integrations.lsp_saga").custom_kind(),
+        },
+        finder = {
+          max_height = 0.5,
+          min_width = 30,
+          force_max_height = false,
+          keys = {
+            jump_to = 'o',
+            expand_or_jump = '<CR>',
+            vsplit = '<C-v>',
+            split = '<C-x>',
+            tabe = '<C-t>',
+            tabnew = 't',
+            quit = { 'q', '<ESC>' },
+            close_in_preview = { 'q', '<ESC>' },
+          },
+        },
+        code_action = {
+          num_shortcut = true,
+          show_server_name = true,
+          extend_gitsigns = false,
+          keys = {
+            quit = { 'q', '<ESC>' },
+            exec = "<CR>",
+          },
+        },
+        beacon = {
+          enable = true,
+          frequency = 10,
+        },
+      })
+    end,
   },
 
   {
@@ -395,11 +423,23 @@ require('lazy').setup({
 
   {
     "andythigpen/nvim-coverage",
-    requires = "nvim-lua/plenary.nvim",
+    dependencies = "nvim-lua/plenary.nvim",
     cmd = { 'Coverage', 'CoverageLoad', 'CoverageLoadLcov', 'CoverageToggle', 'CoverageShow', 'CoverageHide',
       'CoverageClear', 'CoverageSummary', },
     opts = {
       auto_reload = true,
+    },
+  },
+
+  {
+    "jose-elias-alvarez/typescript.nvim",
+    dependencies = 'neovim/nvim-lspconfig',
+  },
+  {
+    "jose-elias-alvarez/null-ls.nvim",
+    dependencies = {
+      'nvim-lua/plenary.nvim',
+      'jose-elias-alvarez/typescript.nvim',
     },
   },
 
@@ -488,7 +528,8 @@ vim.keymap.set('n', '<leader>fd', require('telescope.builtin').diagnostics, { de
 -- See `:help nvim-treesitter`
 require('nvim-treesitter.configs').setup {
   -- Add languages to be installed here that you want installed for treesitter
-  ensure_installed = { 'c', 'cpp', 'go', 'lua', 'python', 'rust', 'tsx', 'typescript', 'vimdoc', 'vim' },
+  ensure_installed = { 'c', 'cpp', 'go', 'lua', 'python', 'rust', 'tsx', 'typescript', 'vimdoc', 'vim', 'markdown',
+    'markdown_inline' },
 
   -- Autoinstall languages that are not installed. Defaults to false (but you can change for yourself!)
   auto_install = true,
@@ -583,46 +624,43 @@ vim.keymap.set('n', '<leader>dq', vim.diagnostic.setloclist, { desc = "Open diag
 -- LSP settings.
 --  This function gets run when an LSP connects to a particular buffer.
 local on_attach = function(client, bufnr)
-  local nmap = function(keys, func, desc)
+  local map = function(mode, keys, func, desc)
     if desc then
       desc = 'LSP: ' .. desc
     end
 
-    vim.keymap.set('n', keys, func, { buffer = bufnr, desc = desc })
+    vim.keymap.set(mode, keys, func, { buffer = bufnr, desc = desc })
   end
 
-  local imap = function(keys, func, desc)
-    if desc then
-      desc = 'LSP: ' .. desc
-    end
+  -- map('n', 'gd', vim.lsp.buf.definition, '[G]oto [D]efinition')
+  map('n', 'gD', vim.lsp.buf.declaration, '[G]oto [D]eclaration')
+  -- map('n', '<localleader>lrn', vim.lsp.buf.rename, '[R]e[n]ame')
+  -- map('n', '<localleader>lca', vim.lsp.buf.code_action, '[C]ode [A]ction')
+  -- map('n', 'K', vim.lsp.buf.hover, 'Hover Documentation')
+  -- map('n', '<C-k>', vim.lsp.buf.signature_help, 'Signature Documentation')
+  map('n', 'gR', require('telescope.builtin').lsp_references, '[G]oto [R]eferences')
+  -- map('n', 'gI', vim.lsp.buf.implementation, '[G]oto [I]mplementation')
 
-    vim.keymap.set('i', keys, func, { buffer = bufnr, desc = desc })
-  end
+  -- LSP Saga mappings
+  map({ 'n', 'i', 'v' }, '<C-Enter>', "<cmd>Lspsaga code_action<CR>", '[C]ode [A]ction')
+  map({ 'n', 'i', 'v' }, '<localleader>lca', "<cmd>Lspsaga code_action<CR>", '[C]ode [A]ction')
+  -- map('n', '<localleader>lrn', "<cmd>Lspsaga rename ++project<CR>")
+  map('n', '<localleader>lrn', "<cmd>Lspsaga rename<CR>", '[R]e[n]ame')
+  map('n', 'gd', "<cmd>Lspsaga goto_definition<CR>", '[G]oto [D]efinition')
+  map('n', 'gp', "<cmd>Lspsaga peek_definition<CR>", '[P]eek Definition')
+  map('n', 'gr', "<cmd>Lspsaga lsp_finder<CR>", 'Find Definition / [R]eferences / Implementation')
 
-  -- nmap('<localleader>lrn', vim.lsp.buf.rename, '[R]e[n]ame')
-  -- nmap('<localleader>lca', vim.lsp.buf.code_action, '[C]ode [A]ction')
-  nmap('<C-Enter>', vim.lsp.buf.code_action, '[C]ode [A]ction')
-  imap('<C-Enter>', vim.lsp.buf.code_action, '[C]ode [A]ction')
+  map('n', 'gT', vim.lsp.buf.type_definition, 'Type [D]efinition')
+  map('n', '<localleader>lsd', require('telescope.builtin').lsp_document_symbols, '[D]ocument [S]ymbols')
+  map('n', '<localleader>lsw', require('telescope.builtin').lsp_dynamic_workspace_symbols, '[W]orkspace [S]ymbols')
 
-  nmap('<localleader>lrn', "<cmd>Lspsaga rename ++project<CR>")
-  nmap('<localleader>lca', "<cmd>Lspsaga code_action<CR>", '[C]ode [A]ction')
+  map('n', 'K', '<cmd>Lspsaga hover_doc<CR>', 'Hover Documentation')
 
-  nmap('gd', vim.lsp.buf.definition, '[G]oto [D]efinition')
-  nmap('gr', require('telescope.builtin').lsp_references, '[G]oto [R]eferences')
-  nmap('gI', vim.lsp.buf.implementation, '[G]oto [I]mplementation')
-  nmap('gD', vim.lsp.buf.type_definition, 'Type [D]efinition')
-  nmap('<localleader>lsd', require('telescope.builtin').lsp_document_symbols, '[D]ocument [S]ymbols')
-  nmap('<localleader>lsw', require('telescope.builtin').lsp_dynamic_workspace_symbols, '[W]orkspace [S]ymbols')
-
-  -- See `:help K` for why this keymap
-  nmap('K', vim.lsp.buf.hover, 'Hover Documentation')
-  -- nmap('<C-k>', vim.lsp.buf.signature_help, 'Signature Documentation')
 
   -- Lesser used LSP functionality
-  nmap('gD', vim.lsp.buf.declaration, '[G]oto [D]eclaration')
-  nmap('<localleader>lwa', vim.lsp.buf.add_workspace_folder, '[W]orkspace [A]dd Folder')
-  nmap('<localleader>lwr', vim.lsp.buf.remove_workspace_folder, '[W]orkspace [R]emove Folder')
-  nmap('<localleader>lwl', function()
+  map('n', '<localleader>lwa', vim.lsp.buf.add_workspace_folder, '[W]orkspace [A]dd Folder')
+  map('n', '<localleader>lwr', vim.lsp.buf.remove_workspace_folder, '[W]orkspace [R]emove Folder')
+  map('n', '<localleader>lwl', function()
     print(vim.inspect(vim.lsp.buf.list_workspace_folders()))
   end, '[W]orkspace [L]ist Folders')
 
@@ -647,7 +685,7 @@ local servers = {
       --   GOFLAGS = "-tags=integration",
       -- },
       -- ["formatting.local"] = "github.com/koinworks/asgard-koinneo",
-      ["formatting.gofumpt"] = true,
+      -- ["formatting.gofumpt"] = true,
       ["ui.semanticTokens"] = true,
       ["ui.completion.usePlaceholders"] = true,
       ["ui.completion.matcher"] = "Fuzzy",
@@ -662,7 +700,9 @@ local servers = {
   },
   pyright = {},
   -- rust_analyzer = {},
-  -- tsserver = {},
+
+  tsserver = {},
+  eslint = {},
 
   lua_ls = {
     Lua = {
@@ -679,12 +719,20 @@ require('neodev').setup()
 local capabilities = vim.lsp.protocol.make_client_capabilities()
 capabilities = require('cmp_nvim_lsp').default_capabilities(capabilities)
 
+local null_ls = require("null-ls")
+
+null_ls.setup({
+  sources = {
+    null_ls.builtins.formatting.prettierd,
+    require("typescript.extensions.null-ls.code-actions"),
+  },
+})
+
 -- Setup mason so it can manage external tooling
 require('mason').setup()
 
 -- Ensure the servers above are installed
 local mason_lspconfig = require 'mason-lspconfig'
-
 mason_lspconfig.setup {
   ensure_installed = vim.tbl_keys(servers),
 }
@@ -696,6 +744,39 @@ mason_lspconfig.setup_handlers {
       on_attach = on_attach,
       settings = servers[server_name],
     }
+  end,
+
+  ["tsserver"] = function()
+    require("typescript").setup({
+      disable_commands = false, -- prevent the plugin from creating Vim commands
+      debug = false,            -- enable debug logging for commands
+      go_to_source_definition = {
+        fallback = true,        -- fall back to standard LSP definition on failure
+      },
+      server = {                -- pass options to lspconfig's setup method
+        capabilities = capabilities,
+        on_attach = on_attach,
+        init_options = {
+          preferences = {
+            allowRenameOfImportPath = true,
+            importModuleSpecifierEnding = "auto",
+            importModuleSpecifierPreference = "non-relative",
+            includeCompletionsForImportStatements = true,
+            includeCompletionsForModuleExports = true,
+            quotePreference = "single",
+            includeInlayParameterNameHints = "all",
+            includeInlayParameterNameHintsWhenArgumentMatchesName = true,
+            includeInlayFunctionParameterTypeHints = true,
+            includeInlayVariableTypeHints = true,
+            includeInlayVariableTypeHintsWhenTypeMatchesName = true,
+            includeInlayPropertyDeclarationTypeHints = true,
+            includeInlayFunctionLikeReturnTypeHints = true,
+            includeInlayEnumMemberValueHints = true,
+          },
+        },
+        settings = servers["tsserver"],
+      },
+    })
   end,
 }
 
