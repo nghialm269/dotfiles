@@ -3,7 +3,12 @@ return {
     "nvim-neo-tree/neo-tree.nvim",
     cmd = 'Neotree',
     keys = {
-      { "<leader>ef", "<cmd>Neotree toggle=true reveal=true position=right<cr>", desc = "NeoTree" },
+      { "<leader>ef", "<cmd>Neotree toggle=true reveal=true position=right<cr>", desc = "NeoTree Files" },
+      {
+        "<leader>es",
+        "<cmd>Neotree toggle=true reveal=true position=right document_symbols<cr>",
+        desc = "NeoTree Document Symbols"
+      },
     },
     branch = "v2.x",
     dependencies = {
@@ -35,17 +40,82 @@ return {
       vim.g.neo_tree_remove_legacy_commands = 1
     end,
     opts = {
+      open_files_do_not_replace_types = { "terminal", "Trouble", "qf", "Outline" },
+      sources = { "filesystem", "buffers", "git_status" },
       source_selector = {
         winbar = true,
         statusline = false,
+        sources = {
+          { source = "filesystem", display_name = "󰉓 Files" },
+          { source = "buffers",    display_name = "󰈙 Buffers" },
+          { source = "git_status", display_name = "󰊢 Git" },
+        },
       },
       window = {
         mappings = {
           ["<cr>"] = "open_with_window_picker",
           ["<C-v>"] = "vsplit_with_window_picker",
           ["<C-x>"] = "split_with_window_picker",
+          ["<C-t>"] = "open_tabnew",
+          ["<space>"] = "none",
         }
-      }
+      },
+      filesystem = {
+        bind_to_cwd = false,
+        follow_current_file = true,
+        use_libuv_file_watcher = true,
+      },
+      default_component_configs = {
+        indent = {
+          with_expanders = true, -- if nil and file nesting is enabled, will enable expanders
+          expander_collapsed = "",
+          expander_expanded = "",
+          expander_highlight = "NeoTreeExpander",
+        },
+        icon = {
+          folder_empty = "󰜌",
+          folder_empty_open = "󰜌",
+        },
+        git_status = {
+          symbols = {
+            renamed = "󰁕",
+            unstaged = "󰄱",
+          },
+        },
+      },
     },
-  }
+  },
+  {
+    "folke/flash.nvim",
+    event = "VeryLazy",
+    ---@type Flash.Config
+    opts = {},
+    keys = {
+      {
+        "s",
+        mode = { "n", "x", "o" },
+        function()
+          -- default options: exact mode, multi window, all directions, with a backdrop
+          require("flash").jump()
+        end,
+        desc = "Flash",
+      },
+      {
+        "S",
+        mode = { "n", "o", "x" },
+        function()
+          require("flash").treesitter()
+        end,
+        desc = "Flash Treesitter",
+      },
+      {
+        "r",
+        mode = "o",
+        function()
+          require("flash").remote()
+        end,
+        desc = "Remote Flash",
+      },
+    },
+  },
 }
