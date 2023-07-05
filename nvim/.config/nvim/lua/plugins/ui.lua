@@ -29,6 +29,7 @@ return {
           },
           mason = true,
           neotree = true,
+          neogit = true,
           neotest = true,
           cmp = true,
           native_lsp = {
@@ -51,6 +52,8 @@ return {
           },
           semantic_tokens = true,
           treesitter = true,
+          overseer = true,
+          rainbow_delimiters = true,
           telescope = {
             enabled = true,
             style = "nvchad",
@@ -147,4 +150,5 @@ return {
     end,
   },
   { 'Bekaboo/dropbar.nvim' },
+  { 'hiphish/rainbow-delimiters.nvim' },
 }

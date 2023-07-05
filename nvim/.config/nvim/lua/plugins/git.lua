@@ -71,7 +71,11 @@ return {
     dependencies = "nvim-lua/plenary.nvim",
     cmd = { "DiffviewOpen", "DiffviewFileHistory" },
     keys = {
-      { "<leader>gd", "<cmd>DiffviewOpen<CR>", desc = "Git: Diff HEAD" },
+      { "<leader>gdd", "<cmd>DiffviewOpen<CR>",                               desc = "Git: Diff HEAD" },
+      { "<leader>gdh", "<cmd>DiffviewFileHistory<CR>",                        desc = "Git: Diff File history" },
+      -- https://old.reddit.com/r/neovim/comments/11ls23z/what_is_your_nvim_workflow_for_reviewing_prs/jbf6ifd/
+      { "<leader>gdf", "<cmd>DiffviewOpen origin/main... --imply-local<CR>",  desc = "Git: Diff feature branch" },
+      { "<leader>gdc", "<cmd>DiffviewFileHistory --range=origin/main...<CR>", desc = "Git: Diff feature branch commits" },
     },
     config = function()
       require("diffview").setup({

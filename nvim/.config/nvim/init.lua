@@ -81,7 +81,24 @@ vim.opt.rtp:prepend(lazypath)
 require('lazy').setup({
   -- NOTE: First, some plugins that don't require any configuration
 
-  -- Git related plugins
+
+  {
+    "gabrielpoca/replacer.nvim",
+    keys = {
+      { "<leader>h", function() require("replacer").run() end, desc = "Replacer: Run" },
+    },
+  },
+  {
+    "romainl/vim-qf",
+  },
+
+  {
+    "mbbill/undotree",
+    cmd = "UndotreeToggle",
+    init = function()
+      vim.g.undotree_SetFocusWhenToggle = 1
+    end,
+  },
 
 
   -- Detect tabstop and shiftwidth automatically
@@ -174,6 +191,11 @@ require('lazy').setup({
   },
 
   {
+    'debugloop/telescope-undo.nvim',
+    dependencies = { 'nvim-telescope/telescope.nvim' },
+  },
+
+  {
     "folke/trouble.nvim",
     dependencies = { "nvim-tree/nvim-web-devicons" },
     cmd = "TroubleToggle",
@@ -210,11 +232,7 @@ require('lazy').setup({
     "kylechui/nvim-surround",
     version = "*", -- Use for stability; omit to use `main` branch for the latest features
     event = "VeryLazy",
-    config = function()
-      require("nvim-surround").setup({
-        -- Configuration here, or leave empty to use defaults
-      })
-    end
+    opts = {},
   },
 
   {
@@ -555,7 +573,14 @@ telescope.setup {
     },
   },
   extensions = {
-    fzf = fzf_opts
+    fzf = fzf_opts,
+    undo = {
+      side_by_side = true,
+      layout_strategy = "vertical",
+      layout_config = {
+        preview_height = 0.8,
+      },
+    },
   },
 }
 
@@ -563,6 +588,7 @@ telescope.setup {
 pcall(telescope.load_extension, 'fzf')
 pcall(telescope.load_extension, 'refactoring')
 pcall(telescope.load_extension, 'telescope-alternate')
+pcall(telescope.load_extension, 'undo')
 
 -- See `:help telescope.builtin`
 vim.keymap.set('n', '<leader>f?', require('telescope.builtin').oldfiles, { desc = '[?] Find recently opened files' })
@@ -588,7 +614,10 @@ vim.keymap.set('n', '<leader>fs', require('telescope.builtin').lsp_document_symb
 vim.keymap.set('n', '<leader>fS', require('telescope.builtin').lsp_dynamic_workspace_symbols,
   { desc = '[F]uzzy search workspace [S]ymbols' })
 
+-- extensions
 vim.keymap.set('n', '<leader>fa', "<cmd>:Telescope telescope-alternate alternate_file<CR>",
+  { desc = '[F]uzzy search [A]lternate files' })
+vim.keymap.set('n', '<leader>fu', "<cmd>:Telescope undo<CR>",
   { desc = '[F]uzzy search [A]lternate files' })
 
 -- [[ Configure Treesitter ]]
