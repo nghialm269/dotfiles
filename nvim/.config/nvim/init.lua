@@ -1,3 +1,5 @@
+vim.opt.exrc = true
+
 vim.opt.tabstop = 4
 vim.opt.softtabstop = 4
 vim.opt.shiftwidth = 4
@@ -80,11 +82,12 @@ require('lazy').setup({
   -- NOTE: First, some plugins that don't require any configuration
 
   -- Git related plugins
-  'tpope/vim-fugitive',
-  'tpope/vim-rhubarb',
+
 
   -- Detect tabstop and shiftwidth automatically
   'tpope/vim-sleuth',
+
+  'tpope/vim-abolish',
 
   -- NOTE: This is where your plugins related to LSP can be installed.
   --  The configuration is done below. Search for lspconfig to find it below.
@@ -121,20 +124,6 @@ require('lazy').setup({
 
   -- Useful plugin to show you pending keybinds.
   { 'folke/which-key.nvim',    opts = {} },
-  {
-    -- Adds git releated signs to the gutter, as well as utilities for managing changes
-    'lewis6991/gitsigns.nvim',
-    opts = {
-      -- See `:help gitsigns.txt`
-      -- signs = {
-      --   add = { text = '+' },
-      --   change = { text = '~' },
-      --   delete = { text = '_' },
-      --   topdelete = { text = '‾' },
-      --   changedelete = { text = '~' },
-      -- },
-    },
-  },
 
   { "sitiom/nvim-numbertoggle" },
 
@@ -145,9 +134,10 @@ require('lazy').setup({
     opts = {
       options = {
         theme = "catppuccin",
-        icons_enabled = false,
+        icons_enabled = true,
         component_separators = '|',
         section_separators = '',
+        globalstatus = true,
       },
     },
   },
@@ -167,19 +157,20 @@ require('lazy').setup({
   { 'numToStr/Comment.nvim',         opts = {} },
 
   -- Fuzzy Finder (files, lsp, etc)
-  { 'nvim-telescope/telescope.nvim', version = '*', dependencies = { 'nvim-lua/plenary.nvim' } },
+  { 'nvim-telescope/telescope.nvim', dependencies = { 'nvim-lua/plenary.nvim' } },
 
-  -- Fuzzy Finder Algorithm which requires local dependencies to be built.
-  -- Only load if `make` is available. Make sure you have the system
-  -- requirements installed.
   {
     'nvim-telescope/telescope-fzf-native.nvim',
-    -- NOTE: If you are having trouble with this installation,
-    --       refer to the README for telescope-fzf-native for more instructions.
+    dependencies = { 'nvim-telescope/telescope.nvim' },
     build = 'make',
     cond = function()
       return vim.fn.executable 'make' == 1
     end,
+  },
+
+  {
+    'otavioschwanck/telescope-alternate',
+    dependencies = { 'nvim-telescope/telescope.nvim' },
   },
 
   {
@@ -407,6 +398,45 @@ require('lazy').setup({
   },
 
   {
+    'stevearc/overseer.nvim',
+    cmd = { 'OverseerOpen', 'OverseerClose', 'OverseerToggle', 'OverseerRun', 'OverseerRunCmd', 'OverseerInfo',
+      'OverseerBuild', 'OverseerQuickAction', 'OverseerTaskAction', 'OverseerClearTask' },
+    keys = {
+      {
+        "<leader>tt",
+        function() require("overseer").toggle({ enter = false }) end,
+        desc =
+        "Overseer: Toggle Task List"
+      },
+      {
+        "<leader>to",
+        function() require("overseer").open({ enter = true }) end,
+        desc =
+        "Overseer: Open Task List"
+      },
+      {
+        "<leader>tr",
+        function() require("overseer").run_template() end,
+        desc =
+        "Overseer: Run"
+      },
+    },
+    opts = {
+      task_list = {
+        bindings = {
+          ["o"] = "RunAction",
+          ["<CR>"] = "IncreaseDetail",
+          ["<BS>"] = "DecreaseDetail",
+          ["<C-l>"] = false,
+          ["<C-h>"] = false,
+          ["<C-k>"] = false,
+          ["<C-j>"] = false,
+        },
+      }
+    },
+  },
+
+  {
     "pmizio/typescript-tools.nvim",
     dependencies = { "nvim-lua/plenary.nvim", "neovim/nvim-lspconfig" },
   },
@@ -532,6 +562,7 @@ telescope.setup {
 -- Enable telescope fzf native, if installed
 pcall(telescope.load_extension, 'fzf')
 pcall(telescope.load_extension, 'refactoring')
+pcall(telescope.load_extension, 'telescope-alternate')
 
 -- See `:help telescope.builtin`
 vim.keymap.set('n', '<leader>f?', require('telescope.builtin').oldfiles, { desc = '[?] Find recently opened files' })
@@ -556,6 +587,9 @@ vim.keymap.set('n', '<leader>fs', require('telescope.builtin').lsp_document_symb
 --   { desc = '[F]uzzy search workspace [S]ymbols' })
 vim.keymap.set('n', '<leader>fS', require('telescope.builtin').lsp_dynamic_workspace_symbols,
   { desc = '[F]uzzy search workspace [S]ymbols' })
+
+vim.keymap.set('n', '<leader>fa', "<cmd>:Telescope telescope-alternate alternate_file<CR>",
+  { desc = '[F]uzzy search [A]lternate files' })
 
 -- [[ Configure Treesitter ]]
 -- See `:help nvim-treesitter`
@@ -704,6 +738,8 @@ local on_attach = function(client, bufnr)
     print(vim.inspect(vim.lsp.buf.list_workspace_folders()))
   end, '[W]orkspace [L]ist Folders')
 
+  vim.lsp.inlay_hint(bufnr, true)
+
   if client.name ~= "gopls" -- added in go.nvim
       or client.name ~= "tsserver" or client.name == 'typescript-tools' then
     -- Create a command `:Format` local to the LSP buffer
@@ -748,7 +784,7 @@ local servers = {
     Lua = {
       workspace = { checkThirdParty = false },
       telemetry = { enable = false },
-      hint = { enable = true },
+      hint = { enable = true, arrayIndex = "Disable" },
     },
   },
 }
@@ -772,6 +808,18 @@ null_ls.setup({
 
 require("typescript-tools").setup {
   on_attach = on_attach,
+  settings = {
+    tsserver_file_preferences = {
+      includeInlayParameterNameHints = "all",
+      includeInlayParameterNameHintsWhenArgumentMatchesName = true,
+      includeInlayFunctionParameterTypeHints = true,
+      includeInlayVariableTypeHints = true,
+      includeInlayVariableTypeHintsWhenTypeMatchesName = true,
+      includeInlayPropertyDeclarationTypeHints = true,
+      includeInlayFunctionLikeReturnTypeHints = true,
+      includeInlayEnumMemberValueHints = true,
+    },
+  }
 }
 
 -- Setup mason so it can manage external tooling

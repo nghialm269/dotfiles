@@ -89,7 +89,13 @@ return {
     "folke/flash.nvim",
     event = "VeryLazy",
     ---@type Flash.Config
-    opts = {},
+    opts = {
+      modes = {
+        char = {
+          keys = { "f", "F", "t", "T", [";"] = "L", [","] = "H" },
+        }
+      }
+    },
     keys = {
       {
         "s",
@@ -102,7 +108,7 @@ return {
       },
       {
         "S",
-        mode = { "n", "o", "x" },
+        mode = { "n", "o", --[[ "x" ]] },
         function()
           require("flash").treesitter()
         end,
