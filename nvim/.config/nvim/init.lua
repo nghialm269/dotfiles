@@ -24,6 +24,8 @@ vim.opt.listchars = {
   multispace = "⋅",
 }
 
+vim.opt.fillchars:append { diff = "╱" }
+
 vim.opt.splitbelow = true
 vim.opt.splitright = true
 vim.opt.eadirection = "hor"
@@ -99,6 +101,15 @@ require('lazy').setup({
       vim.g.undotree_SetFocusWhenToggle = 1
     end,
   },
+
+  {
+    'echasnovski/mini.nvim',
+    version = '*',
+    config = function()
+      require('mini.bracketed').setup()
+    end
+  },
+
 
 
   -- Detect tabstop and shiftwidth automatically
