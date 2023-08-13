@@ -18,13 +18,14 @@ set $term alacritty
 # Your preferred application launcher
 # Note: pass the final command to swaymsg so that the resulting window can be opened
 # on the original workspace that the command was run on.
-set $menu onagre | xargs swaymsg exec --
+set $menu anyrun | xargs swaymsg exec --
 
 ### Output configuration
 #
 # Default wallpaper (more resolutions are available in /usr/share/backgrounds/sway/)
 
 set $extMonitor "Dell Inc. DELL U2723QE BGVD2P3"
+# set $extMonitor "DELL U2723QE"
 set $laptopMonitor eDP-1
 
 output * bg ~/PbPYzVD.jpg fill
@@ -61,11 +62,11 @@ workspace 10 output $extMonitor $laptopMonitor
 set $locker 'loginctl lock-session'
 exec swayidle -w \
     timeout 300 $locker \
-    timeout 330 'swaymsg output \* dpms off' \
+    timeout 320 'swaymsg output \* dpms off' \
     resume 'swaymsg output \* dpms on' \
-    timeout 30 'if pgrep swaylock; then swaymsg "output * dpms off"; fi' \
+    timeout 20 'if pgrep swaylock; then swaymsg "output * dpms off"; fi' \
     resume 'if pgrep swaylock; then swaymsg "output * dpms on"; fi' \
-    timeout 30 'makoctl set-mode away' \
+    timeout 20 'makoctl set-mode away' \
     resume 'makoctl set-mode default' \
     before-sleep $locker \
     lock 'swaylock --daemonize -c 000000'
@@ -176,17 +177,17 @@ input type:touchpad {
     set $volexec exec ~/.config/sway/scripts/volume.sh
     set $volpct 2
     set $volpct_shift 5
-    bindsym XF86AudioMute $volexec toggle-mute
-    bindsym XF86AudioRaiseVolume $volexec change-volume +$volpct
-    bindsym XF86AudioLowerVolume $volexec change-volume -$volpct
-    bindsym Shift+XF86AudioRaiseVolume $volexec change-volume +$volpct_shift
-    bindsym Shift+XF86AudioLowerVolume $volexec change-volume -$volpct_shift
+    bindsym --locked XF86AudioMute $volexec toggle-mute
+    bindsym --locked XF86AudioRaiseVolume $volexec change-volume +$volpct
+    bindsym --locked XF86AudioLowerVolume $volexec change-volume -$volpct
+    bindsym --locked Shift+XF86AudioRaiseVolume $volexec change-volume +$volpct_shift
+    bindsym --locked Shift+XF86AudioLowerVolume $volexec change-volume -$volpct_shift
 
     set $playerctl exec playerctl
-    bindsym XF86AudioPlay $playerctl play-pause
-    bindsym XF86AudioPrev $playerctl previous
-    bindsym XF86AudioNext $playerctl next
-    bindsym XF86AudioStop $playerctl stop
+    bindsym --locked XF86AudioPlay $playerctl play-pause
+    bindsym --locked XF86AudioPrev $playerctl previous
+    bindsym --locked XF86AudioNext $playerctl next
+    bindsym --locked XF86AudioStop $playerctl stop
 #
 # Layout stuff:
 #
@@ -259,6 +260,7 @@ bindsym Print exec ~/.config/sway/scripts/screenshot.sh
 bindsym Mod1+Print exec ~/.config/sway/scripts/screenshot.sh region
 bindsym Shift+Print exec ~/.config/sway/scripts/screenshot.sh window
 
+bindsym $mod+Shift+p exec ~/.config/sway/scripts/ddcutil-select-input.sh
 
 # UI
 #
@@ -325,10 +327,14 @@ exec gammastep-indicator
 # exec cmst --minimized --wait-time 5
 exec fcitx5
 exec blueman-applet
-exec copyq
+exec copyq --start-server
 exec udiskie --automount --notify --smart-tray
-exec dbus-update-activation-environment --systemd WAYLAND_DISPLAY XDG_CURRENT_DESKTOP=sway
+exec dbus-update-activation-environment --systemd DISPLAY WAYLAND_DISPLAY SWAYSOCK XDG_CURRENT_DESKTOP=sway
 exec /usr/lib/polkit-gnome/polkit-gnome-authentication-agent-1
+exec_always {
+    pkill -f ddcutil-auto-preset-switch.sh
+    ~/.config/sway/scripts/ddcutil-auto-preset-switch.sh
+}
 
 bindsym $mod+Backspace exec swaymsg [app_id="Alacritty-Scratchpad"] scratchpad show || $(exec alacritty --class Alacritty-Scratchpad -e tmux new-session -A -s Scratchpad & sleep 0.2 && swaymsg [app_id="Alacritty-Scratchpad"] scratchpad show)
 
