@@ -1,13 +1,13 @@
 -- Copy from https://github.com/arsham/shark/blob/897683938573de5ceb23b7b985540953d86025e5/lua/plugins/luasnip/go.lua
 
 -- Requires {{{
-local ls = require("luasnip")
-local fmt = require("luasnip.extras.fmt").fmt
-local fmta = require("luasnip.extras.fmt").fmta
-local rep = require("luasnip.extras").rep
-local util = require("plugins.snippets.util")
-local ai = require("luasnip.nodes.absolute_indexer")
-local partial = require("luasnip.extras").partial
+local ls = require('luasnip')
+local fmt = require('luasnip.extras.fmt').fmt
+local fmta = require('luasnip.extras.fmt').fmta
+local rep = require('luasnip.extras').rep
+local util = require('plugins.snippets.util')
+local ai = require('luasnip.nodes.absolute_indexer')
+local partial = require('luasnip.extras').partial
 --}}}
 
 -- Conditions {{{
