@@ -51,7 +51,7 @@ return {
                 return
               end
 
-              local client = vim.lsp.get_active_clients({ bufnr = event.buf, name = 'eslint' })[1]
+              local client = vim.lsp.get_clients({ bufnr = event.buf, name = 'eslint' })[1]
               if client then
                 local diag = vim.diagnostic.get(
                   event.buf,

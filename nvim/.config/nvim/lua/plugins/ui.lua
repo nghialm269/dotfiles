@@ -139,7 +139,13 @@ return {
             click = 'v:lua.ScFa',
           },
           {
-            sign = { name = { '^GitSigns' }, maxwidth = 1, colwidth = 1, auto = false, wrap = true },
+            sign = {
+              namespace = { 'gitsigns' },
+              maxwidth = 1,
+              colwidth = 1,
+              auto = false,
+              wrap = true,
+            },
             click = 'v:lua.ScSa',
           },
           {
@@ -229,7 +235,7 @@ return {
         tab_char = '│',
       },
       exclude = {
-        filetype = {
+        filetypes = {
           'lspinfo',
           'packer',
           'checkhealth',

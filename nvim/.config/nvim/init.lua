@@ -24,7 +24,13 @@ vim.opt.listchars = {
   multispace = '⋅',
 }
 
-vim.opt.fillchars:append({ diff = '╱' })
+vim.opt.fillchars:append({
+  diff = '╱',
+  fold = ' ',
+  foldopen = '',
+  foldclose = '',
+  foldsep = '│', -- or "│" to use bar for show fold area
+})
 
 vim.opt.splitbelow = true
 vim.opt.splitright = true
@@ -62,6 +68,14 @@ vim.opt.diffopt = {
   'algorithm:histogram',
   'linematch:60',
 }
+
+vim.opt.foldcolumn = '1'
+vim.opt.foldlevel = 99
+vim.opt.foldlevelstart = 99
+vim.opt.foldenable = true
+vim.opt.foldmethod = 'expr'
+vim.opt.foldexpr = 'v:lua.vim.treesitter.foldexpr()'
+vim.opt.foldtext = require('foldtext')
 
 vim.keymap.set({ 'n', 'v' }, '<Space>', '<Nop>', { silent = true })
 --  NOTE: Must happen before plugins are required (otherwise wrong leader will be used)
