@@ -66,6 +66,7 @@ return {
           notify = true,
           semantic_tokens = true,
           treesitter = true,
+          window_picker = true,
           overseer = true,
           rainbow_delimiters = true,
           telescope = {
@@ -160,6 +161,10 @@ return {
           },
           {
             sign = { name = { '.*' }, maxwidth = 2, colwidth = 2, auto = false, wrap = false },
+            click = 'v:lua.ScSa',
+          },
+          {
+            sign = { name = { '^Dap' }, maxwidth = 1, colwidth = 1, auto = true, wrap = false },
             click = 'v:lua.ScSa',
           },
           {
@@ -324,10 +329,10 @@ return {
       },
     },
   },
-  {
-    'dgagn/diagflow.nvim',
-    opts = {},
-  },
+  -- {
+  --   'dgagn/diagflow.nvim',
+  --   opts = {},
+  -- },
   -- {
   --   "nvim-zh/colorful-winsep.nvim",
   --   opts = {},

@@ -313,6 +313,11 @@ require('lazy').setup({
     },
     opts = {
       auto_reload = true,
+      lang = {
+        python = {
+          coverage_command = 'poetry run coverage json -o -',
+        },
+      },
     },
   },
 
@@ -511,6 +516,9 @@ vim.keymap.set('n', '<BS>', ':b#<CR>', { silent = true })
 
 -- Diagnostic config
 vim.diagnostic.config({
+  float = {
+    source = true,
+  },
   severity_sort = true,
 })
 

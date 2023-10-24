@@ -22,6 +22,7 @@ return {
       require('go').setup({
         goimport = 'gopls',
         gofmt = 'gopls',
+        lsp_cfg = true,
       })
 
       local go_format = require('go.format')
@@ -110,7 +111,7 @@ return {
           experimental = {
             test_table = true,
           },
-          args = { '-count=1' },
+          args = { '-count=1', '-coverprofile=coverage.out' },
         },
       },
     },

@@ -360,4 +360,32 @@ return {
       { "<leader>mv", "<cmd>GrapplePopup tags<CR>", desc = "View tags" },
     },
   },
+
+  {
+    'ojroques/nvim-osc52',
+    opts = {
+      max_length = 0,
+      silent = false,
+      trim = false,
+      tmux_passthrough = true,
+    },
+    config = function(_, opts)
+      local osc52 = require('osc52')
+      osc52.setup(opts)
+
+      local function copy(lines, _)
+        osc52.copy(table.concat(lines, '\n'))
+      end
+
+      local function paste()
+        return { vim.fn.split(vim.fn.getreg(''), '\n'), vim.fn.getregtype('') }
+      end
+
+      vim.g.clipboard = {
+        name = 'osc52',
+        copy = { ['+'] = copy, ['*'] = copy },
+        paste = { ['+'] = paste, ['*'] = paste },
+      }
+    end,
+  },
 }
