@@ -357,6 +357,10 @@ vim.keymap.set({ 'n', 'v' }, '<Space>', '<Nop>', { silent = true })
 -- Remap for dealing with word wrap
 vim.keymap.set('n', 'k', "v:count == 0 ? 'gk' : 'k'", { expr = true, silent = true })
 vim.keymap.set('n', 'j', "v:count == 0 ? 'gj' : 'j'", { expr = true, silent = true })
+vim.keymap.set('n', '<C-d>', '<C-d>zz', { desc = 'Center cursor after moving down half-page' })
+vim.keymap.set('n', '<C-u>', '<C-u>zz', { desc = 'Center cursor after moving up half-page' })
+vim.keymap.set('n', '<C-f>', '<C-f>zz', { desc = 'Center cursor after moving down full-page' })
+vim.keymap.set('n', '<C-b>', '<C-b>zz', { desc = 'Center cursor after moving up full-page' })
 
 -- [[ Highlight on yank ]]
 -- See `:help vim.highlight.on_yank()`
