@@ -58,6 +58,7 @@ vim.opt.ttimeoutlen = 20
 
 vim.opt.cursorline = true
 vim.opt.number = true
+vim.opt.relativenumber = true
 
 vim.opt.diffopt = {
   'internal',
@@ -99,8 +100,6 @@ end
 vim.opt.rtp:prepend(lazypath)
 
 require('lazy').setup({
-
-  { 'sitiom/nvim-numbertoggle' },
 
   -- "gc" to comment visual regions/lines
   { 'numToStr/Comment.nvim', opts = {} },

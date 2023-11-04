@@ -152,4 +152,18 @@ return {
     event = 'VeryLazy',
     opts = {},
   },
+  {
+    'Wansmer/treesj',
+    keys = { 'gS' },
+    dependencies = { 'nvim-treesitter/nvim-treesitter' },
+    opts = {
+      use_default_keymaps = false,
+      max_join_length = 500,
+    },
+    config = function(_, opts)
+      local treesj = require('treesj')
+      treesj.setup(opts)
+      vim.keymap.set('n', 'gS', treesj.toggle, { desc = 'Toggle split/join' })
+    end,
+  },
 }

@@ -36,7 +36,10 @@ return {
           },
           lsp_saga = true,
           mason = true,
-          mini = true,
+          mini = {
+            enabled = true,
+            indentscope_color = 'lavender', -- catppuccin color (eg. `lavender`) Default: text
+          },
           neotree = true,
           neogit = true,
           neotest = true,
@@ -120,13 +123,6 @@ return {
         },
       })
     end,
-  },
-  {
-    'mawkler/modicator.nvim',
-    dependencies = {
-      'catppuccin',
-    },
-    opts = {},
   },
   {
     'luukvbaal/statuscol.nvim',
@@ -329,10 +325,6 @@ return {
       },
     },
   },
-  -- {
-  --   'dgagn/diagflow.nvim',
-  --   opts = {},
-  -- },
   -- {
   --   "nvim-zh/colorful-winsep.nvim",
   --   opts = {},
