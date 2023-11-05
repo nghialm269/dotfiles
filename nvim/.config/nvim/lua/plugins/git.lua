@@ -5,7 +5,6 @@ return {
     cmd = 'Neogit',
     opts = {},
   },
-
   {
     'ruifm/gitlinker.nvim',
     dependencies = 'nvim-lua/plenary.nvim',
@@ -63,13 +62,6 @@ return {
         desc = 'Git: Open repo url',
       },
     },
-    setup = function()
-      local wk = require('which-key')
-      wk.register({
-        y = 'gitlinker: copy url',
-        o = 'gitlinker: open url',
-      }, { mode = 'n', prefix = '<leader>g' })
-    end,
     opts = {
       mappings = nil,
     },
@@ -104,8 +96,6 @@ return {
           -- "<cmd>DiffviewOpen origin/main... --imply-local<CR>"
           local main_branch =
             vim.fn.system("git symbolic-ref refs/remotes/origin/HEAD | cut -d'/' -f4 | tr -d '\n'")
-          print(main_branch)
-          print('DiffviewOpen origin/' .. main_branch .. '... --imply-local')
           vim.cmd('DiffviewOpen origin/' .. main_branch .. '... --imply-local')
         end,
         desc = 'Git: Diffview - review feature branch',
@@ -118,7 +108,7 @@ return {
             vim.fn.system("git symbolic-ref refs/remotes/origin/HEAD | cut -d'/' -f4 | tr -d '\n'")
           vim.cmd('DiffviewFileHistory --range=origin/' .. main_branch .. '...')
         end,
-        desc = 'Git: Diffview - review feature branch commits',
+        desc = 'Git: Diffview - review commits',
       },
     },
     opts = {
@@ -173,26 +163,26 @@ return {
         desc = 'Git: gitsigns: blame line',
       },
     },
-    opts = {
-      -- signs = {
-      --   add = { text = '+' },
-      --   change = { text = '~' },
-      --   delete = { text = '_' },
-      --   topdelete = { text = '‾' },
-      --   changedelete = { text = '~' },
-      -- },
-    },
+    opts = {},
   },
-
   {
-    'folke/which-key.nvim',
-    optional = true,
-    opts = {
-      defaults = {
-        ['<leader>g'] = { name = '+git' },
-        ['<leader>gd'] = { name = '+diff' },
-        ['<leader>gdr'] = { name = '+review' },
-      },
-    },
+    'echasnovski/mini.clue',
+    opts = function(_, opts)
+      opts.triggers = opts.triggers or {}
+      vim.list_extend(opts.triggers, {
+        { mode = 'n', keys = ']' },
+        { mode = 'n', keys = '[' },
+      })
+
+      opts.clues = opts.clues or {}
+      vim.list_extend(opts.clues, {
+        { mode = 'n', keys = '<leader>g', desc = '+git' },
+        { mode = 'n', keys = '<leader>gd', desc = '+diff' },
+        { mode = 'n', keys = '<leader>gdh', desc = '+history' },
+        { mode = 'n', keys = '<leader>gdr', desc = '+review' },
+        { mode = 'n', keys = ']h', postkeys = ']' },
+        { mode = 'n', keys = '[h', postkeys = '[' },
+      })
+    end,
   },
 }

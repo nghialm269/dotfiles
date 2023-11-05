@@ -61,16 +61,15 @@ return {
       opts = {},
     },
 
-    -- which key integration
     {
-      'folke/which-key.nvim',
-      optional = true,
-      opts = {
-        defaults = {
-          ['<localleader>d'] = { name = '+debug' },
-          ['<localleader>da'] = { name = '+adapters' },
-        },
-      },
+      'echasnovski/mini.clue',
+      opts = function(_, opts)
+        opts.clues = opts.clues or {}
+        vim.list_extend(opts.clues, {
+          { mode = 'n', keys = '<localleader>d', desc = '+debug' },
+          { mode = 'n', keys = '<localleader>da', desc = '+adapters' },
+        })
+      end,
     },
 
     -- hydra integration

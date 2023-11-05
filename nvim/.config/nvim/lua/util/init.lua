@@ -1,4 +1,13 @@
+---@class util
+---@field log util.log
 local M = {}
+
+setmetatable(M, {
+  __index = function(t, k)
+    t[k] = require('util.' .. k)
+    return t[k]
+  end,
+})
 
 ---@param on_attach fun(client, buffer)
 function M.on_attach(on_attach)

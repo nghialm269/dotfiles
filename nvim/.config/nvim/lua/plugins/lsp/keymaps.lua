@@ -25,7 +25,7 @@ function M.get()
       { '<localleader>lf', format, desc = 'Format Range', mode = 'v', has = 'rangeFormatting', },
       { '<localleader>lca', vim.lsp.buf.code_action, desc = 'Code Action', mode = { 'n', 'i', 'v' }, has = 'codeAction', },
       { '<C-Enter>', vim.lsp.buf.code_action, desc = 'Code Action', mode = { 'n', 'i', 'v' }, has = 'codeAction', },
-      { '<leader>lcA', function() vim.lsp.buf.code_action({ context = { only = { 'source', }, diagnostics = {}, }, }) end, desc = 'Source Action', has = 'codeAction', },
+      { '<localleader>lcA', function() vim.lsp.buf.code_action({ context = { only = { 'source', }, diagnostics = {}, }, }) end, desc = 'Source Action', has = 'codeAction', },
       { '<localleader>lrn', vim.lsp.buf.rename, desc = 'Rename', has = 'rename', },
       { '<localleader>lsd', '<cmd>Telescope lsp_document_symbols<CR>', desc = 'Document Symbols', },
       { '<localleader>lsw', '<cmd>Telescope lsp_dynamic_workspace_symbols<CR>', desc = 'Workspace Symbols', },

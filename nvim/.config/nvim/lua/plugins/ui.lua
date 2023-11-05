@@ -78,7 +78,7 @@ return {
           },
           lsp_trouble = true,
           illuminate = true,
-          which_key = true,
+          which_key = false,
         },
       })
 
@@ -132,10 +132,6 @@ return {
         relculright = true,
         segments = {
           {
-            text = { builtin.foldfunc },
-            click = 'v:lua.ScFa',
-          },
-          {
             sign = {
               namespace = { 'gitsigns' },
               maxwidth = 1,
@@ -172,6 +168,10 @@ return {
             sign = { name = { '^coverage_' }, maxwidth = 1, colwidth = 1, auto = true, wrap = true },
             click = 'v:lua.ScSa',
           },
+          {
+            text = { builtin.foldfunc },
+            click = 'v:lua.ScFa',
+          },
         },
         ft_ignore = { 'neo-tree', 'qf' },
       })
@@ -192,6 +192,7 @@ return {
   },
   {
     'Bekaboo/dropbar.nvim',
+    enabled = false, -- conflict with mini.files, using lspsaga for now
     opts = {
       custom_sources = {},
     },

@@ -10,6 +10,53 @@ return {
     end,
   },
   {
+    'neovim/nvim-lspconfig',
+    opts = {
+      servers = {
+        lua_ls = {
+          settings = {
+            Lua = {
+              workspace = {
+                checkThirdParty = false,
+              },
+              telemetry = {
+                enable = false,
+              },
+              completion = {
+                callSnippet = 'Replace',
+              },
+              hint = {
+                enable = true,
+                arrayIndex = 'Disable',
+              },
+              format = {
+                enable = false,
+              },
+            },
+          },
+        },
+      },
+    },
+  },
+  {
+    'jose-elias-alvarez/null-ls.nvim',
+    dependencies = {
+      {
+        'williamboman/mason.nvim',
+        opts = function(_, opts)
+          opts.ensure_installed = opts.ensure_installed or {}
+          vim.list_extend(opts.ensure_installed, { 'stylua' })
+        end,
+      },
+    },
+    opts = function(_, opts)
+      local nls = require('null-ls')
+
+      opts.sources = opts.sources or {}
+      vim.list_extend(opts.sources, { nls.builtins.formatting.stylua })
+    end,
+  },
+  {
     'mfussenegger/nvim-dap',
     dependencies = {
       {

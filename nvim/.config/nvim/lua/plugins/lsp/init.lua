@@ -12,6 +12,7 @@ return {
         'nvimdev/lspsaga.nvim',
         dependencies = { 'nvim-treesitter/nvim-treesitter', 'nvim-tree/nvim-web-devicons' },
         opts = {
+          -- symbol_in_winbar = { enable = false },
           finder = {
             max_height = 0.6,
             keys = {
@@ -67,33 +68,14 @@ return {
       -- LSP Server Settings
       ---@type lspconfig.options
       servers = {
-        lua_ls = {
-          -- mason = false, -- set to false if you don't want this server to be installed with mason
-          -- Use this to add any additional keymaps
-          -- for specific lsp servers
-          ---@type LazyKeys[]
-          -- keys = {},
-          settings = {
-            Lua = {
-              workspace = {
-                checkThirdParty = false,
-              },
-              telemetry = {
-                enable = false,
-              },
-              completion = {
-                callSnippet = 'Replace',
-              },
-              hint = {
-                enable = true,
-                arrayIndex = 'Disable',
-              },
-              format = {
-                enable = false,
-              },
-            },
-          },
-        },
+        -- lua_ls = {
+        --   mason = false, -- set to false if you don't want this server to be installed with mason
+        --   Use this to add any additional keymaps
+        --   for specific lsp servers
+        ---  @type LazyKeys[]
+        --   keys = {},
+        --   settings = {},
+        -- }
       },
       -- you can do any additional lsp server setup here
       -- return true if you don't want this server to be setup with lspconfig
@@ -232,35 +214,8 @@ return {
   },
 
   {
-    'jose-elias-alvarez/null-ls.nvim',
-    event = { 'BufReadPre', 'BufNewFile' },
-    dependencies = {
-      'nvim-lua/plenary.nvim',
-      'mason.nvim',
-    },
-
-    opts = function()
-      local nls = require('null-ls')
-      return {
-        root_dir = require('null-ls.utils').root_pattern(
-          '.null-ls-root',
-          '.neoconf.json',
-          'Makefile',
-          '.git'
-        ),
-        sources = {
-          nls.builtins.code_actions.refactoring,
-          nls.builtins.code_actions.gitrebase,
-          nls.builtins.formatting.stylua,
-        },
-      }
-    end,
-  },
-
-  {
     'williamboman/mason.nvim',
     cmd = 'Mason',
-    keys = { { '<leader>cm', '<cmd>Mason<cr>', desc = 'Mason' } },
     opts = {
       ensure_installed = {},
     },
@@ -281,6 +236,30 @@ return {
       else
         ensure_installed()
       end
+    end,
+  },
+
+  {
+    'jose-elias-alvarez/null-ls.nvim',
+    event = { 'BufReadPre', 'BufNewFile' },
+    dependencies = {
+      'nvim-lua/plenary.nvim',
+    },
+
+    opts = function()
+      local nls = require('null-ls')
+      return {
+        root_dir = require('null-ls.utils').root_pattern(
+          '.null-ls-root',
+          '.neoconf.json',
+          'Makefile',
+          '.git'
+        ),
+        sources = {
+          nls.builtins.code_actions.refactoring,
+          nls.builtins.code_actions.gitrebase,
+        },
+      }
     end,
   },
 
