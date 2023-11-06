@@ -14,7 +14,8 @@ set $down j
 set $up k
 set $right l
 # Your preferred terminal emulator
-set $term alacritty
+# set $term alacritty
+set $term wezterm
 # Your preferred application launcher
 # Note: pass the final command to swaymsg so that the resulting window can be opened
 # on the original workspace that the command was run on.
@@ -336,13 +337,16 @@ exec_always {
     ~/.config/sway/scripts/ddcutil-auto-preset-switch.sh
 }
 
-bindsym $mod+Backspace exec swaymsg [app_id="Alacritty-Scratchpad"] scratchpad show || $(exec alacritty --class Alacritty-Scratchpad -e tmux new-session -A -s Scratchpad & sleep 0.2 && swaymsg [app_id="Alacritty-Scratchpad"] scratchpad show)
+set $terminalScratchpad "Terminal-Scratchpad"
 
-for_window [app_id="Alacritty-Scratchpad"] {
+bindsym $mod+Backspace exec swaymsg '[app_id=$terminalScratchpad]' scratchpad show || $(exec $term start --class $terminalScratchpad -- tmux new-session -A -s Scratchpad)
+
+for_window [app_id=$terminalScratchpad] {
     move scratchpad
     floating enable
     resize set 800 600
     # move position 800 20
+    scratchpad show
 }
 
 bindsym Mod1+d exec swaymsg [class="GoldenDict" title=".*GoldenDict"] scratchpad show || $(exec goldendict & sleep 1 && swaymsg [class="GoldenDict" title=".*GoldenDict"] scratchpad show)
