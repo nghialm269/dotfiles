@@ -78,6 +78,18 @@ vim.opt.foldmethod = 'expr'
 vim.opt.foldexpr = 'v:lua.vim.treesitter.foldexpr()'
 vim.opt.foldtext = require('foldtext')
 
+vim.g.clipboard = {
+  name = 'OSC 52',
+  copy = {
+    ['+'] = require('vim.clipboard.osc52').copy,
+    ['*'] = require('vim.clipboard.osc52').copy,
+  },
+  paste = {
+    ['+'] = require('vim.clipboard.osc52').paste,
+    ['*'] = require('vim.clipboard.osc52').paste,
+  },
+}
+
 vim.keymap.set({ 'n', 'v' }, '<Space>', '<Nop>', { silent = true })
 --  NOTE: Must happen before plugins are required (otherwise wrong leader will be used)
 vim.g.mapleader = ','
@@ -314,51 +326,57 @@ vim.keymap.set(
   'n',
   '<leader>ff',
   require('telescope.builtin').find_files,
-  { desc = '[F]uzzy search [F]iles' }
+  { desc = 'Fuzzy search Files' }
 )
 vim.keymap.set(
   'n',
   '<leader>fb',
   require('telescope.builtin').buffers,
-  { desc = '[F]uzzy search [B]uffers' }
+  { desc = 'Fuzzy search Buffers' }
+)
+vim.keymap.set(
+  'n',
+  '<leader>fc',
+  require('telescope.builtin').commands,
+  { desc = 'Fuzzy search Commands' }
 )
 vim.keymap.set(
   'n',
   '<leader>fh',
   require('telescope.builtin').help_tags,
-  { desc = '[F]uzzy search [H]elp' }
+  { desc = 'Fuzzy search Help' }
 )
 vim.keymap.set(
   'n',
   '<leader>fw',
   require('telescope.builtin').grep_string,
-  { desc = '[F]uzzy search current [W]ord' }
+  { desc = 'Fuzzy search current Word' }
 )
 vim.keymap.set(
   'n',
   '<leader>fg',
   require('telescope.builtin').live_grep,
-  { desc = '[F]uzzy search by [G]rep' }
+  { desc = 'Fuzzy search by Grep' }
 )
 vim.keymap.set(
   'n',
   '<leader>fd',
   require('telescope.builtin').diagnostics,
-  { desc = '[F]uzzy search [D]iagnostics' }
+  { desc = 'Fuzzy search Diagnostics' }
 )
 vim.keymap.set(
   'n',
   '<leader>fs',
   require('telescope.builtin').lsp_document_symbols,
-  { desc = '[F]uzzy search document [S]ymbols' }
+  { desc = 'Fuzzy search document Symbols' }
 )
 -- vim.keymap.set('n', '<leader>fS', require('telescope.builtin').lsp_workspace_symbols,
---   { desc = '[F]uzzy search workspace [S]ymbols' })
+--   { desc = 'Fuzzy search workspace Symbols' })
 vim.keymap.set(
   'n',
   '<leader>fS',
   require('telescope.builtin').lsp_dynamic_workspace_symbols,
-  { desc = '[F]uzzy search workspace [S]ymbols' }
+  { desc = 'Fuzzy search workspace Symbols' }
 )
 
 -- extensions
@@ -366,14 +384,9 @@ vim.keymap.set(
   'n',
   '<leader>fa',
   '<cmd>:Telescope telescope-alternate alternate_file<CR>',
-  { desc = '[F]uzzy search [A]lternate files' }
+  { desc = 'Fuzzy search Alternate files' }
 )
-vim.keymap.set(
-  'n',
-  '<leader>fu',
-  '<cmd>:Telescope undo<CR>',
-  { desc = '[F]uzzy search [A]lternate files' }
-)
+vim.keymap.set('n', '<leader>fu', '<cmd>:Telescope undo<CR>', { desc = 'Fuzzy search undo tree' })
 
 vim.keymap.set('n', '<BS>', ':b#<CR>', { silent = true })
 

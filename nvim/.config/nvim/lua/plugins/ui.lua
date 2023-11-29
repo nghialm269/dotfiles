@@ -126,6 +126,7 @@ return {
   },
   {
     'luukvbaal/statuscol.nvim',
+    branch = '0.10',
     config = function()
       local builtin = require('statuscol.builtin')
       require('statuscol').setup({
@@ -292,43 +293,30 @@ return {
     end,
   },
   {
-    'rcarriga/nvim-notify',
-    event = 'VeryLazy',
-    keys = {
-      {
-        '<leader>nd',
-        function()
-          require('notify').dismiss({ silent = true, pending = true })
-        end,
-        desc = 'Dismiss all Notifications',
-      },
-    },
-    opts = {
-      timeout = 3000,
-      max_height = function()
-        return math.floor(vim.o.lines * 0.75)
-      end,
-      max_width = function()
-        return math.floor(vim.o.columns * 0.75)
-      end,
-      -- top_down = false,
-    },
-    init = function()
-      vim.notify = require('notify')
+    'j-hui/fidget.nvim',
+    config = function()
+      local fidget = require('fidget')
+      local display = require('fidget.progress.display')
+      fidget.setup({
+        progress = {
+          -- ignore_done_already = true,
+          display = {
+            format_message = function(msg)
+              if msg.lsp_name == 'null-ls' and msg.title == 'code_action' then
+                -- vim.notify(vim.inspect(msg))
+                return nil
+              end
+              return display.default_format_message(msg)
+            end,
+          },
+        },
+        notification = {
+          override_vim_notify = true,
+          window = {
+            winblend = 0,
+          },
+        },
+      })
     end,
   },
-  {
-    'j-hui/fidget.nvim',
-    branch = 'legacy',
-    opts = {
-      window = {
-        blend = 0,
-      },
-    },
-  },
-  -- {
-  --   "nvim-zh/colorful-winsep.nvim",
-  --   opts = {},
-  --   event = { "WinNew" },
-  -- },
 }
