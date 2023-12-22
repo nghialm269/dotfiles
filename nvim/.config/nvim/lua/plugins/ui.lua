@@ -302,7 +302,7 @@ return {
           -- ignore_done_already = true,
           display = {
             format_message = function(msg)
-              if msg.lsp_name == 'null-ls' and msg.title == 'code_action' then
+              if msg.lsp_client.config.name == 'null-ls' and msg.title == 'code_action' then
                 -- vim.notify(vim.inspect(msg))
                 return nil
               end

@@ -29,7 +29,7 @@ vim.opt.fillchars:append({
   fold = ' ',
   foldopen = '',
   foldclose = '',
-  foldsep = '│', -- or "│" to use bar for show fold area
+  foldsep = '│',
 })
 
 vim.opt.splitbelow = true
@@ -81,12 +81,12 @@ vim.opt.foldtext = require('foldtext')
 vim.g.clipboard = {
   name = 'OSC 52',
   copy = {
-    ['+'] = require('vim.clipboard.osc52').copy,
-    ['*'] = require('vim.clipboard.osc52').copy,
+    ['+'] = require('vim.ui.clipboard.osc52').copy('+'),
+    ['*'] = require('vim.ui.clipboard.osc52').copy('*'),
   },
   paste = {
-    ['+'] = require('vim.clipboard.osc52').paste,
-    ['*'] = require('vim.clipboard.osc52').paste,
+    ['+'] = require('vim.ui.clipboard.osc52').paste('+'),
+    ['*'] = require('vim.ui.clipboard.osc52').paste('*'),
   },
 }
 

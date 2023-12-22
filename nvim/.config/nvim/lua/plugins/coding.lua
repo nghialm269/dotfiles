@@ -18,6 +18,8 @@ return {
             opts = {
               suggestion = { enabled = false },
               panel = { enabled = false },
+              copilot_node_command = vim.fn.expand('$HOME')
+                .. '/.asdf/installs/nodejs/20.10.0/bin/node',
             },
           },
         },

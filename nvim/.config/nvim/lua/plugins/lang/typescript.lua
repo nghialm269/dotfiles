@@ -73,6 +73,13 @@ return {
     'jose-elias-alvarez/null-ls.nvim',
     dependencies = {
       {
+        'williamboman/mason.nvim',
+        opts = function(_, opts)
+          opts.ensure_installed = opts.ensure_installed or {}
+          vim.list_extend(opts.ensure_installed, { 'prettierd' })
+        end,
+      },
+      {
         'vuki656/package-info.nvim',
         dependencies = 'MunifTanjim/nui.nvim',
         opts = {
@@ -85,6 +92,7 @@ return {
 
       opts.sources = opts.sources or {}
       vim.list_extend(opts.sources, {
+        nls.builtins.formatting.prettierd,
         require('null-ls.helpers').make_builtin({
           name = 'package-info',
           method = nls.methods.CODE_ACTION,
