@@ -88,6 +88,7 @@ return {
           { mode = 'n', keys = '<leader>d', desc = '+diagnostics' },
           { mode = 'n', keys = '<leader>e', desc = '+explorer' },
           { mode = 'n', keys = '<leader>f', desc = '+find' },
+          { mode = 'n', keys = '<leader>h', desc = '+find & replace' },
           { mode = 'n', keys = '<leader>m', desc = '+marks' },
           { mode = 'n', keys = '<leader>n', desc = '+notifications' },
           { mode = 'n', keys = '<leader>t', desc = '+tasks (overseer)' },
@@ -496,17 +497,48 @@ return {
   'tpope/vim-abolish',
 
   {
+    'MagicDuck/grug-far.nvim',
+    keys = {
+      {
+        '<leader>hw',
+        function()
+          require('grug-far').grug_far({ prefills = { search = vim.fn.expand('<cword>') } })
+        end,
+        desc = 'Find & Replace: Search current word',
+      },
+      {
+        '<leader>hb',
+        function()
+          require('grug-far').grug_far({ prefills = { paths = vim.fn.expand('%') } })
+        end,
+        desc = 'Find & Replace: Current buffer',
+      },
+      {
+        '<leader>hh',
+        function()
+          require('grug-far').grug_far({})
+        end,
+        desc = 'Find & Replace: Global',
+      },
+    },
+    config = function()
+      require('grug-far').setup({})
+    end,
+  },
+
+  {
     'gabrielpoca/replacer.nvim',
     keys = {
       {
-        '<leader>h',
+        '<leader>hq',
         function()
           require('replacer').run()
         end,
-        desc = 'Replacer: Run',
+        desc = 'Replacer (quickfix): Run',
       },
     },
   },
+
   {
     'romainl/vim-qf',
   },
@@ -520,11 +552,42 @@ return {
   },
 
   {
-    'cbochs/grapple.nvim',
-    -- stylua: ignore
-    keys = {
-      { "<leader>mm", "<cmd>GrappleToggle<CR>", desc = "Tag/Untag buffer" },
-      { "<leader>mv", "<cmd>GrapplePopup tags<CR>", desc = "View tags" },
-    },
+    'AndrewRadev/linediff.vim',
+  },
+
+  {
+    'ThePrimeagen/harpoon',
+    branch = 'harpoon2',
+    dependencies = { 'nvim-lua/plenary.nvim' },
+    config = function()
+      local harpoon = require('harpoon')
+      local extensions = require('harpoon.extensions')
+
+      harpoon:setup()
+      harpoon:extend(extensions.builtins.navigate_with_number())
+
+      vim.keymap.set('n', '<leader>ba', function()
+        harpoon:list():add()
+      end)
+      vim.keymap.set('n', '<leader>bb', function()
+        harpoon.ui:toggle_quick_menu(harpoon:list())
+      end)
+
+      harpoon:extend({
+        UI_CREATE = function(cx)
+          vim.keymap.set('n', '<C-v>', function()
+            harpoon.ui:select_menu_item({ vsplit = true })
+          end, { buffer = cx.bufnr })
+
+          vim.keymap.set('n', '<C-x>', function()
+            harpoon.ui:select_menu_item({ split = true })
+          end, { buffer = cx.bufnr })
+
+          vim.keymap.set('n', '<C-t>', function()
+            harpoon.ui:select_menu_item({ tabedit = true })
+          end, { buffer = cx.bufnr })
+        end,
+      })
+    end,
   },
 }

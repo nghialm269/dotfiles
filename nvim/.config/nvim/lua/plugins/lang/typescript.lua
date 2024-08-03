@@ -41,7 +41,7 @@ return {
             workingDirectory = { mode = 'auto' },
           },
         },
-        biome = {},
+        -- biome = {},
       },
       setup = {
         eslint = function()

@@ -12,7 +12,7 @@ return {
         'nvimdev/lspsaga.nvim',
         dependencies = { 'nvim-treesitter/nvim-treesitter', 'nvim-tree/nvim-web-devicons' },
         opts = {
-          -- symbol_in_winbar = { enable = false },
+          symbol_in_winbar = { enable = false },
           finder = {
             max_height = 0.6,
             keys = {
@@ -133,7 +133,7 @@ return {
       if opts.inlay_hints.enabled and inlay_hint then
         Util.on_attach(function(client, buffer)
           if client.server_capabilities.inlayHintProvider then
-            inlay_hint(buffer, true)
+            inlay_hint(true, { bufnr = buffer })
           end
         end)
       end

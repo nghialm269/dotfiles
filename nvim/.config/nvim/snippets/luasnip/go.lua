@@ -208,7 +208,103 @@ return {
       { ls.i(1), ls.i(2) }
     ),
     in_test_func
-  ), --}}}
+  ),
+
+
+  ls.s(
+    { trig = "ttcs", dscr = "testify create test cases for testing" },
+    fmta(
+      [[
+        tcs := map[string]struct {
+          arrangeMocks func()
+          <>
+        } {
+          // Test cases here
+        }
+        for name, tc := range tcs {
+          suite.Run(name, func() {
+            tc.arrangeMocks()
+            <>
+          })
+        }
+      ]],
+      { ls.i(1), ls.i(2) }
+    ),
+    in_test_func
+  ),
+
+  ls.s(
+    { trig = "tmockon", dscr = "testify mocks on" },
+    fmta(
+      [[
+        suite.<>.On("<>", <>).
+          Return(<>, <>).
+          Once()
+      ]],
+      { ls.i(1), ls.i(2), ls.i(3), ls.i(4), ls.i(5) }
+
+    ),
+    in_test_func
+  ),
+
+  ls.s(
+    { trig = "tmockmatchedby", dscr = "testify mock matched by" },
+    fmta(
+      [[
+        mock.MatchedBy(func(<> <>) bool {
+          <>
+        }),<>
+      ]],
+{
+      ls.i(1, "name"),
+      ls.i(2, "type"),
+      ls.c(3, {
+        fmta("return <>", ls.i(1)),
+        fmta([[
+            diff := cmp.Diff(<>{<>}, <>)
+            return suite.Emptyf(diff, "mismatch (-want +got):\n%s", diff)
+          ]], {
+          rep(ai(2)),
+          ls.i(1),
+          rep(ai(1)),
+        }),
+      }, {
+      }),
+      ls.i(0),
+    }
+    ),
+    in_test_func
+  ),
+
+  ls.s(
+    { trig = "tsei", dscr = "testify suite error is" },
+    fmta(
+      [[
+        suite.ErrorIs(<>, <>)<>
+      ]],
+{
+      ls.i(1, "err"),
+      ls.i(2, "expectedErr"),
+      ls.i(0),
+    }
+    ),
+    in_test_func
+  ),
+
+  ls.s(
+    { trig = "tsne", dscr = "testify suite no error" },
+    fmta(
+      [[
+        suite.NoError(<>)<>
+      ]],
+{
+      ls.i(1, "err"),
+      ls.i(0),
+    }
+    ),
+    in_test_func
+  ),
+  --}}}
 
   -- Go CMP {{{
   ls.s(
@@ -227,7 +323,7 @@ return {
 
   -- Create Mocks {{{
   ls.s(
-    { trig = "mock", name = "Mocks", dscr = "Create a mock with defering assertion" },
+    { trig = "mock", name = "Mocks", dscr = "Create a mock with deferring assertion" },
     fmt("{} := &mocks.{}{{}}\ndefer {}.AssertExpectations(t)\n{}", {
       ls.i(1, "m"),
       ls.i(2, "Mocked"),

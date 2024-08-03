@@ -1,22 +1,61 @@
-;; extends
+; extends
 
 (short_var_declaration
     left: (expression_list
             (identifier))
     right: (expression_list
-             (raw_string_literal) @sql (#offset! @sql 0 1 0 -1)))
+             (raw_string_literal) @injection.content (#offset! @injection.content 0 1 0 -1))
+    (#set! injection.language "sql"))
 
 (var_declaration
   (var_spec
     name: (identifier)
     value: (expression_list
-             (raw_string_literal) @sql (#offset! @sql 0 1 0 -1))))
+             (raw_string_literal) @injection.content (#offset! @injection.content 0 1 0 -1)))
+    (#set! injection.language "sql"))
 
 (const_declaration
   (const_spec
     name: (identifier)
     value: (expression_list
-             (raw_string_literal) @sql (#offset! @sql 0 1 0 -1))))
+             (raw_string_literal) @injection.content (#offset! @injection.content 0 1 0 -1)))
+    (#set! injection.language "sql"))
 
-;; copy from https://github.com/arsham/shark/blob/897683938573de5ceb23b7b985540953d86025e5/after/queries/go/injections.scm
+; json
+
+((const_spec
+  name: (identifier) @_const
+  value: (expression_list (raw_string_literal) @json))
+ (#lua-match? @_const ".*[J|j]son.*"))
+
+; jsonStr := `{"foo": "bar"}`
+
+((short_var_declaration
+    left: (expression_list
+            (identifier) @_var)
+    right: (expression_list
+             (raw_string_literal) @json))
+  (#lua-match? @_var ".*[J|j]son.*")
+  (#offset! @json 0 1 0 -1))
+
+; nvim 0.10
+
+(const_spec
+  name: ((identifier) @_const(#lua-match? @_const ".*[J|j]son.*"))
+  value: (expression_list (raw_string_literal) @injection.content
+   (#set! injection.language "json")))
+
+(short_var_declaration
+    left: (expression_list (identifier) @_var (#lua-match? @_var ".*[J|j]son.*"))
+    right: (expression_list (raw_string_literal) @injection.content)
+  (#offset! @injection.content 0 1 0 -1)
+  (#set! injection.language "json"))
+
+(var_spec
+  name: ((identifier) @_const(#lua-match? @_const ".*[J|j]son.*"))
+  value: (expression_list (raw_string_literal) @injection.content
+   (#set! injection.language "json")))
+
+
+;; https://github.com/arsham/shark/blob/f2a28eba39b65a6f3339e1a19cbba50093b95572/after/queries/go/injections.scm
 ;; vim: fo-=t

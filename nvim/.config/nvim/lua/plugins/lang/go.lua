@@ -20,9 +20,8 @@ return {
     },
     config = function()
       require('go').setup({
-        goimport = 'gopls',
-        gofmt = 'gopls',
         lsp_cfg = true,
+        lsp_keymaps = false,
       })
 
       local go_format = require('go.format')
@@ -32,12 +31,12 @@ return {
         group = vim.api.nvim_create_augroup('LspFormat', {}),
         pattern = '*.go',
         callback = function()
-          go_format.goimport()
+          go_format.goimports()
         end,
       })
 
       vim.api.nvim_create_user_command('Format', function()
-        go_format.goimport()
+        go_format.goimports()
       end, {})
     end,
     event = { 'CmdlineEnter' },
@@ -110,7 +109,10 @@ return {
           experimental = {
             test_table = true,
           },
-          args = { '-count=1', '-coverprofile=coverage.out' },
+          args = {
+            '-count=1',
+            '-coverprofile=' .. vim.fn.getcwd() .. '/coverage.out',
+          },
         },
       },
     },

@@ -12,12 +12,12 @@ function M.get()
     ---@class PluginLspKeys
     -- stylua: ignore
     M._keys = {
-      { 'gd', function() require("telescope.builtin").lsp_definitions({ reuse_win = true }) end, desc = 'Goto Definition', has = 'definition', },
+      { 'gd', function() require("telescope.builtin").lsp_definitions() end, desc = 'Goto Definition', has = 'definition', },
       { 'gr', '<cmd>Telescope lsp_references<cr>', desc = 'Goto References' },
       { 'gR', '<cmd>Lspsaga finder<cr>', desc = 'Find Implementations, References, Definitions, Type Definitions' },
       { 'gD', vim.lsp.buf.declaration, desc = 'Goto Declaration' },
-      { 'gI', function() require("telescope.builtin").lsp_implementations({ reuse_win = true }) end, desc = 'Goto Implementation', },
-      { 'gT', function() require("telescope.builtin").lsp_type_definitions({ reuse_win = true }) end, desc = 'Goto Type Definition', },
+      { 'gI', function() require("telescope.builtin").lsp_implementations() end, desc = 'Goto Implementation', },
+      { 'gT', function() require("telescope.builtin").lsp_type_definitions() end, desc = 'Goto Type Definition', },
       { 'K', vim.lsp.buf.hover, desc = 'Hover Documentation', },
       { 'gK', vim.lsp.buf.signature_help, desc = 'Signature Help', has = 'signatureHelp', },
       { '<C-s>', vim.lsp.buf.signature_help, mode = 'i', desc = 'Signature Help', has = 'signatureHelp', },

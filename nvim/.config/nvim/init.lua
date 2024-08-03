@@ -8,6 +8,7 @@ vim.opt.title = true
 
 vim.opt.ignorecase = true
 vim.opt.smartcase = true
+vim.opt.inccommand = 'split'
 
 vim.opt.scrolloff = 9
 vim.opt.sidescrolloff = 10
@@ -453,5 +454,30 @@ local servers = {
   },
   pyright = {},
 }
+
+local qf_loclist_group = vim.api.nvim_create_augroup('QFLocListGroup', { clear = true })
+vim.api.nvim_create_autocmd('FileType', {
+  pattern = { 'qf', 'location' },
+  group = qf_loclist_group,
+  callback = function(ev)
+    vim.keymap.set('n', '<M-CR>', function()
+      require('pickers.selectwin').toggle(function(origin_win, picked_win, new_win)
+        -- origin_win should be either quickfix or loclist since this keymap is only set for those
+        local origin_buf = vim.api.nvim_win_get_buf(origin_win)
+        local buftype = vim.api.nvim_get_option_value('buftype', { buf = origin_buf })
+
+        local cmd
+        local line_nr = vim.fn.line('.', origin_win)
+        if buftype == 'quickfix' then
+          vim.cmd('cc ' .. line_nr)
+        elseif buftype == 'loclist' then
+          vim.cmd('ll ' .. line_nr)
+        else -- should never happen
+          vim.notify('Unknown buftype: ' .. buftype, 'warn')
+        end
+      end)
+    end, { silent = true, buffer = ev.buf })
+  end,
+})
 
 -- vim: ts=2 sts=2 sw=2 et

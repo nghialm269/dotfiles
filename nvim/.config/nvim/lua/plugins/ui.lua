@@ -30,10 +30,7 @@ return {
           fidget = true,
           flash = true,
           gitsigns = true,
-          indent_blankline = {
-            enabled = true,
-            colored_indent_levels = false,
-          },
+          grug_far = true,
           lsp_saga = true,
           mason = true,
           mini = {
@@ -193,7 +190,7 @@ return {
   },
   {
     'Bekaboo/dropbar.nvim',
-    enabled = false, -- conflict with mini.files, using lspsaga for now
+    -- enabled = false, -- conflict with mini.files, using lspsaga for now
     opts = {
       custom_sources = {},
     },
@@ -227,71 +224,27 @@ return {
   },
 
   { 'hiphish/rainbow-delimiters.nvim' },
-
   {
-    'lukas-reineke/indent-blankline.nvim',
-    event = { 'BufReadPost', 'BufNewFile' },
-    main = 'ibl',
-    opts = {
-      indent = {
-        char = '│',
-        tab_char = '│',
-      },
-      exclude = {
-        filetypes = {
-          'lspinfo',
-          'packer',
-          'checkhealth',
-          'help',
-          'man',
-          'gitcommit',
-          'TelescopePrompt',
-          'TelescopeResults',
-          '',
-          'alpha',
-          'dashboard',
-          'neo-tree',
-          'Trouble',
-          'lazy',
-          'mason',
-          'notify',
-          'toggleterm',
-          'lazyterm',
-          'sagafinder',
+    'shellRaining/hlchunk.nvim',
+    event = { 'UIEnter' },
+    config = function()
+      require('hlchunk').setup({
+        chunk = {
+          enable = true,
         },
-      },
-      scope = { enabled = false },
-    },
-  },
-  {
-    'echasnovski/mini.indentscope',
-    version = '*',
-    event = { 'BufReadPre', 'BufNewFile' },
-    opts = {
-      symbol = '│',
-      options = { try_as_border = true },
-    },
-    init = function()
-      vim.api.nvim_create_autocmd('FileType', {
-        pattern = {
-          'help',
-          'alpha',
-          'dashboard',
-          'neo-tree',
-          'Trouble',
-          'lazy',
-          'mason',
-          'notify',
-          'toggleterm',
-          'lazyterm',
-          'sagafinder',
+        indent = {
+          enable = true,
         },
-        callback = function()
-          vim.b.miniindentscope_disable = true
-        end,
+        line_num = {
+          enable = true,
+        },
+        blank = {
+          enable = true,
+        },
       })
     end,
   },
+
   {
     'j-hui/fidget.nvim',
     config = function()
@@ -318,5 +271,11 @@ return {
         },
       })
     end,
+  },
+  {
+    'grapp-dev/nui-components.nvim',
+    dependencies = {
+      'MunifTanjim/nui.nvim',
+    },
   },
 }

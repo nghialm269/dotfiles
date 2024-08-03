@@ -16,10 +16,17 @@ return {
             cmd = 'Copilot',
             event = 'InsertEnter',
             opts = {
-              suggestion = { enabled = false },
-              panel = { enabled = false },
+              suggestion = {
+                enabled = true,
+                accept = '<C-e>',
+                dismiss = '/',
+              },
+              panel = {
+                enabled = true,
+                auto_refresh = true,
+              },
               copilot_node_command = vim.fn.expand('$HOME')
-                .. '/.asdf/installs/nodejs/20.10.0/bin/node',
+                .. '/.local/share/mise/installs/node/lts/bin/node',
             },
           },
         },
@@ -131,6 +138,14 @@ return {
           local left = vim.api.nvim_replace_termcodes('<Left>', true, true, true)
           vim.api.nvim_feedkeys('()' .. left, 'n', false)
         end
+      end)
+
+      cmp.event:on('menu_opened', function()
+        vim.b.copilot_suggestion_hidden = true
+      end)
+
+      cmp.event:on('menu_closed', function()
+        vim.b.copilot_suggestion_hidden = false
       end)
     end,
   },
