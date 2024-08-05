@@ -40,6 +40,7 @@ vim.opt.eadirection = 'hor'
 vim.opt.mouse = 'a'
 vim.opt.mousefocus = true
 vim.opt.mousemodel = 'extend'
+-- vim.opt.mousemoveevent = true
 
 -- vim.opt.signcolumn = "yes:3"
 
@@ -212,6 +213,28 @@ require('lazy').setup({
       end,
     },
   },
+  performance = {
+    cache = {
+      enabled = true,
+    },
+    reset_packpath = true, -- reset the package path to improve startup time
+    rtp = {
+      reset = true, -- reset the runtime path to $VIMRUNTIME and your config directory
+      ---@type string[]
+      paths = {}, -- add any custom paths here that you want to includes in the rtp
+      ---@type string[] list any plugins you want to disable here
+      disabled_plugins = {
+        'gzip',
+        'matchit',
+        'matchparen',
+        'netrwPlugin',
+        'tarPlugin',
+        'tohtml',
+        'tutor',
+        'zipPlugin',
+      },
+    },
+  },
 })
 
 -- [[ Setting options ]]
@@ -323,12 +346,12 @@ vim.keymap.set('n', '<leader>f/', function()
   }))
 end, { desc = '[/] Fuzzily search in current buffer' })
 
-vim.keymap.set(
-  'n',
-  '<leader>ff',
-  require('telescope.builtin').find_files,
-  { desc = 'Fuzzy search Files' }
-)
+-- vim.keymap.set(
+--   'n',
+--   '<leader>ff',
+--   require('telescope.builtin').find_files,
+--   { desc = 'Fuzzy search Files' }
+-- )
 vim.keymap.set(
   'n',
   '<leader>fb',
@@ -347,38 +370,38 @@ vim.keymap.set(
   require('telescope.builtin').help_tags,
   { desc = 'Fuzzy search Help' }
 )
-vim.keymap.set(
-  'n',
-  '<leader>fw',
-  require('telescope.builtin').grep_string,
-  { desc = 'Fuzzy search current Word' }
-)
-vim.keymap.set(
-  'n',
-  '<leader>fg',
-  require('telescope.builtin').live_grep,
-  { desc = 'Fuzzy search by Grep' }
-)
+-- vim.keymap.set(
+--   'n',
+--   '<leader>fw',
+--   require('telescope.builtin').grep_string,
+--   { desc = 'Fuzzy search current Word' }
+-- )
+-- vim.keymap.set(
+--   'n',
+--   '<leader>fg',
+--   require('telescope.builtin').live_grep,
+--   { desc = 'Fuzzy search by Grep' }
+-- )
 vim.keymap.set(
   'n',
   '<leader>fd',
   require('telescope.builtin').diagnostics,
   { desc = 'Fuzzy search Diagnostics' }
 )
-vim.keymap.set(
-  'n',
-  '<leader>fs',
-  require('telescope.builtin').lsp_document_symbols,
-  { desc = 'Fuzzy search document Symbols' }
-)
+-- vim.keymap.set(
+--   'n',
+--   '<leader>fs',
+--   require('telescope.builtin').lsp_document_symbols,
+--   { desc = 'Fuzzy search document Symbols' }
+-- )
 -- vim.keymap.set('n', '<leader>fS', require('telescope.builtin').lsp_workspace_symbols,
 --   { desc = 'Fuzzy search workspace Symbols' })
-vim.keymap.set(
-  'n',
-  '<leader>fS',
-  require('telescope.builtin').lsp_dynamic_workspace_symbols,
-  { desc = 'Fuzzy search workspace Symbols' }
-)
+-- vim.keymap.set(
+--   'n',
+--   '<leader>fS',
+--   require('telescope.builtin').lsp_dynamic_workspace_symbols,
+--   { desc = 'Fuzzy search workspace Symbols' }
+-- )
 
 -- extensions
 vim.keymap.set(

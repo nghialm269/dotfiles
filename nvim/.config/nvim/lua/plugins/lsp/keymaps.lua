@@ -88,4 +88,48 @@ function M.diagnostic_goto(next, severity)
   end
 end
 
+function M.definition_split()
+  vim.lsp.buf.definition({
+    on_list = function(options)
+      -- if there are multiple items, warn the user
+      if #options.items > 1 then
+        vim.fn.setqflist({}, ' ', { title = options.title, items = options.items })
+        vim.cmd('botright copen')
+        return
+      end
+
+      require('pickers.selectwin').toggle(function(origin_win, picked_win, new_win)
+        -- Save position in jumplist
+        vim.cmd("normal! m'")
+
+        -- Push a new item into tagstack
+        local from = { vim.fn.bufnr('%'), vim.fn.line('.'), vim.fn.col('.'), 0 }
+        local items = { { tagname = vim.fn.expand('<cword>'), from = from } }
+        vim.fn.settagstack(vim.fn.win_getid(), { items = items }, 't')
+
+        -- Open the first item in a vertical split
+        local item = options.items[1]
+        local uri = vim.uri_from_fname(item.filename)
+        local bufnr = vim.uri_to_bufnr(uri)
+        vim.api.nvim_win_set_buf(new_win, bufnr)
+        vim.api.nvim_win_set_cursor(new_win, { item.lnum, item.col - 1 })
+        vim.api.nvim_win_call(new_win, function()
+          -- Open folds under the cursor
+          vim.cmd('normal! zv')
+        end)
+        -- local cmd = 'vsplit +'
+        --   .. item.lnum
+        --   .. ' '
+        --   .. item.filename
+        --   .. '|'
+        --   .. 'normal '
+        --   .. item.col
+        --   .. '|'
+        --
+        -- vim.cmd(cmd)
+      end)
+    end,
+  })
+end
+
 return M

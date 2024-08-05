@@ -8,32 +8,8 @@ return {
       'L3MON4D3/LuaSnip',
       'saadparwaiz1/cmp_luasnip',
       'onsails/lspkind.nvim',
-      {
-        'zbirenbaum/copilot-cmp',
-        dependencies = {
-          {
-            'zbirenbaum/copilot.lua',
-            cmd = 'Copilot',
-            event = 'InsertEnter',
-            opts = {
-              suggestion = {
-                enabled = true,
-                accept = '<C-e>',
-                dismiss = '/',
-              },
-              panel = {
-                enabled = true,
-                auto_refresh = true,
-              },
-              copilot_node_command = vim.fn.expand('$HOME')
-                .. '/.local/share/mise/installs/node/lts/bin/node',
-            },
-          },
-        },
-        opts = {},
-      },
     },
-    config = function()
+    config = function(_, opts)
       local cmp = require('cmp')
       local luasnip = require('luasnip')
 
@@ -46,6 +22,14 @@ return {
           and vim.api.nvim_buf_get_text(0, line - 1, 0, line - 1, col, {})[1]:match('^%s*$')
             == nil
       end
+
+      local sources = opts.sources or {}
+      vim.list_extend(sources, {
+        { name = 'nvim_lsp' },
+        { name = 'luasnip' },
+        { name = 'buffer' },
+        { name = 'path' },
+      })
 
       cmp.setup({
         snippet = {
@@ -80,13 +64,7 @@ return {
             end
           end, { 'i', 's' }),
         }),
-        sources = {
-          { name = 'copilot' },
-          { name = 'nvim_lsp' },
-          { name = 'luasnip' },
-          { name = 'buffer' },
-          { name = 'path' },
-        },
+        sources = cmp.config.sources(sources),
         sorting = {
           priority_weight = 2,
           comparators = {
@@ -152,7 +130,7 @@ return {
   {
     'altermo/ultimate-autopair.nvim',
     event = { 'InsertEnter', 'CmdlineEnter' },
-    branch = 'v0.6', --recomended as each new version will have breaking changes
+    branch = 'v0.6', --recommended as each new version will have breaking changes
     opts = {
       { '**', '**', ft = { 'markdown' }, multiline = false },
       { '*', '*', ft = { 'markdown' }, multiline = false },

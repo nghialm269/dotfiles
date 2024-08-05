@@ -31,6 +31,7 @@ return {
           flash = true,
           gitsigns = true,
           grug_far = true,
+          harpoon = true,
           lsp_saga = true,
           mason = true,
           mini = {
@@ -41,10 +42,8 @@ return {
           neogit = true,
           neotest = true,
           cmp = true,
-          dap = {
-            enabled = true,
-            enable_ui = true, -- enable nvim-dap-ui
-          },
+          dap = true,
+          dap_ui = true,
           native_lsp = {
             enabled = true,
             virtual_text = {
@@ -123,7 +122,6 @@ return {
   },
   {
     'luukvbaal/statuscol.nvim',
-    branch = '0.10',
     config = function()
       local builtin = require('statuscol.builtin')
       require('statuscol').setup({
@@ -141,7 +139,7 @@ return {
           },
           {
             sign = {
-              name = { '^DiagnosticSign' },
+              namespace = { 'diagnostic/signs' },
               maxwidth = 1,
               colwidth = 2,
               auto = false,
@@ -154,7 +152,13 @@ return {
             click = 'v:lua.ScSa',
           },
           {
-            sign = { name = { '^Dap' }, maxwidth = 1, colwidth = 1, auto = true, wrap = false },
+            sign = {
+              name = { '^Dap' },
+              maxwidth = 1,
+              colwidth = 1,
+              auto = true,
+              wrap = false,
+            },
             click = 'v:lua.ScSa',
           },
           {
@@ -190,7 +194,6 @@ return {
   },
   {
     'Bekaboo/dropbar.nvim',
-    -- enabled = false, -- conflict with mini.files, using lspsaga for now
     opts = {
       custom_sources = {},
     },
@@ -271,6 +274,18 @@ return {
         },
       })
     end,
+  },
+  {
+    'rasulomaroff/reactive.nvim',
+    dependencies = {
+      {
+        'catppuccin/nvim',
+        name = 'catppuccin',
+      },
+    },
+    opts = {
+      load = { 'catppuccin-mocha-cursor', 'catppuccin-mocha-cursorline' },
+    },
   },
   {
     'grapp-dev/nui-components.nvim',

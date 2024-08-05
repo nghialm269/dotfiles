@@ -43,6 +43,11 @@ return {
     ft = { 'go', 'gomod' },
     -- build = ':lua require("go.install").update_all_sync()' -- if you need to install/update all binaries
   },
+  {
+    'maxandron/goplements.nvim',
+    ft = 'go',
+    opts = {},
+  },
   -- {
   --   "neovim/nvim-lspconfig",
   --   opts = {
@@ -81,7 +86,6 @@ return {
   -- },
   {
     'mfussenegger/nvim-dap',
-    optional = true,
     dependencies = {
       {
         'williamboman/mason.nvim',
@@ -92,27 +96,43 @@ return {
       },
       {
         'leoluz/nvim-dap-go',
-        config = true,
+        opts = {},
+      },
+    },
+    opts = {
+      configurations = {
+        go = {
+          -- See require("dap-go") source for full dlv setup.
+          {
+            type = 'go',
+            name = 'Debug test (manually enter test name)',
+            request = 'launch',
+            mode = 'test',
+            program = './${relativeFileDirname}',
+            args = function()
+              local testname = vim.fn.input('Test name (^regexp$ ok): ')
+              return { '-test.run', testname }
+            end,
+          },
+        },
       },
     },
   },
   {
     'nvim-neotest/neotest',
     dependencies = {
-      'nvim-neotest/neotest-go',
+      'fredrikaverpil/neotest-golang',
     },
     opts = {
       adapters = {
-        ['neotest-go'] = {
-          -- Here we can set options for neotest-go, e.g.
-          -- args = { "-tags=integration" }
-          experimental = {
-            test_table = true,
-          },
-          args = {
+        ['neotest-golang'] = {
+          go_test_args = {
+            '-v',
+            '-race',
             '-count=1',
             '-coverprofile=' .. vim.fn.getcwd() .. '/coverage.out',
           },
+          testify_enabled = true,
         },
       },
     },

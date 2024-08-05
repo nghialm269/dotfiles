@@ -7,6 +7,7 @@ return {
     {
       'rcarriga/nvim-dap-ui',
       dependencies = {
+        'nvim-neotest/nvim-nio',
         {
           'Bekaboo/dropbar.nvim',
           opts = function(_, opts)
@@ -74,7 +75,7 @@ return {
 
     -- hydra integration
     {
-      'anuvyklack/hydra.nvim',
+      'nvimtools/hydra.nvim',
       keys = {
         { '<localleader>dh', desc = 'Hydra', mode = 'n' },
       },
@@ -83,8 +84,8 @@ return {
         local hint = [[
      ^ ^Step^ ^ ^      ^ ^     Action
  ----^-^-^-^--^-^----  ^-^-------------------  
-     ^ ^back^ ^ ^     ^_t_: toggle breakpoint 
-     ^ ^ _K_^ ^        _T_: clear breakpoints 
+     ^ ^back^ ^ ^     ^_b_: toggle breakpoint 
+     ^ ^ _K_^ ^        _B_: clear breakpoints 
  out _H_ ^ ^ _L_ into  _c_: continue
      ^ ^ _J_ ^ ^       _x_: terminate
      ^ ^over ^ ^     ^^_r_: open repl

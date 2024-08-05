@@ -18,19 +18,25 @@ return {
       { '<localleader>tS', function() require('neotest').run.stop() end, desc = 'Stop' },
     },
     opts = {
-      -- Can be a list of adapters like what neotest expects,
-      -- or a list of adapter names,
-      -- or a table of adapter names, mapped to adapter configs.
-      -- The adapter will then be automatically loaded with the config.
       adapters = {},
-      -- Example for loading neotest-go with a custom config
-      -- adapters = {
-      --   ["neotest-go"] = {
-      --     args = { "-tags=integration" },
-      --   },
-      -- },
-      status = { virtual_text = true },
-      output = { open_on_run = true },
+      -- See all config options with :h neotest.Config
+      discovery = {
+        -- Drastically improve performance in ginormous projects by
+        -- only AST-parsing the currently opened buffer.
+        enabled = true,
+        -- Number of workers to parse files concurrently.
+        -- A value of 0 automatically assigns number based on CPU.
+        -- Set to 1 if experiencing lag.
+        concurrent = 0,
+      },
+      running = {
+        -- Run tests concurrently when an adapter provides multiple commands to run.
+        concurrent = true,
+      },
+      summary = {
+        -- Enable/disable animation of icons.
+        animated = true,
+      },
     },
     config = function(_, opts)
       local neotest_ns = vim.api.nvim_create_namespace('neotest')
@@ -98,10 +104,14 @@ return {
   },
   {
     'mfussenegger/nvim-dap',
-    optional = true,
-    -- stylua: ignore
     keys = {
-      { "<localleader>td", function() require("neotest").run.run({strategy = "dap"}) end, desc = "Debug Nearest" },
+      {
+        '<localleader>td',
+        function()
+          require('neotest').run.run({ suite = false, strategy = 'dap' })
+        end,
+        desc = 'Debug Nearest',
+      },
     },
   },
   {

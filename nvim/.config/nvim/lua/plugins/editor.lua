@@ -1,5 +1,32 @@
 return {
   {
+    'ibhagwan/fzf-lua',
+    -- optional for icon support
+    dependencies = { 'nvim-tree/nvim-web-devicons' },
+    keys = {
+      {
+        '<leader>ff',
+        "<cmd>lua require('fzf-lua').files({ resume = true })<CR>",
+        desc = 'Fuzzy search files (resume)',
+      },
+      { '<leader>fF', "<cmd>lua require('fzf-lua').files()<CR>", desc = 'Fuzzy search files' },
+      {
+        '<leader>fw',
+        "<cmd>lua require('fzf-lua').grep_cword()<CR>",
+        desc = 'Fuzzy search word under cursor',
+      },
+      {
+        '<leader>fg',
+        "<cmd>lua require('fzf-lua').live_grep_native({ resume = true })<CR>",
+        desc = 'Fuzzy live search (resume)',
+      },
+    },
+    config = function()
+      -- calling `setup` is optional for customization
+      require('fzf-lua').setup({ 'fzf-native' })
+    end,
+  },
+  {
     'echasnovski/mini.clue',
     event = 'VeryLazy',
     opts = function(_, opts)
@@ -445,10 +472,21 @@ return {
             a = { '@block.outer', '@conditional.outer', '@loop.outer' },
             i = { '@block.inner', '@conditional.inner', '@loop.inner' },
           }, {}),
-          a = ai.gen_spec.treesitter({ a = '@parameter.outer', i = '@parameter.inner' }, {}),
+          a = ai.gen_spec.treesitter({
+            a = '@parameter.outer',
+            i = '@parameter.inner',
+          }, {}),
+          v = ai.gen_spec.treesitter({
+            a = { '@pair.key', '@pair.value' },
+            i = { '@pair.key', '@pair.value' },
+          }, {}),
           f = ai.gen_spec.treesitter({ a = '@function.outer', i = '@function.inner' }, {}),
           c = ai.gen_spec.treesitter({ a = '@class.outer', i = '@class.inner' }, {}),
           C = ai.gen_spec.treesitter({ a = '@comment.outer', i = '@comment.inner' }, {}),
+          ['?'] = ai.gen_spec.treesitter(
+            { a = '@conditional.outer', i = '@conditional.inner' },
+            {}
+          ),
         },
       }
     end,
@@ -590,4 +628,33 @@ return {
       })
     end,
   },
+
+  { 'soulis-1256/eagle.nvim', enabled = false, opts = {} },
+  {
+    'briangwaltney/paren-hint.nvim',
+    dependencies = {
+      'nvim-treesitter/nvim-treesitter',
+    },
+    config = function()
+      require('paren-hint')
+    end,
+  },
+
+  {
+    'andymass/vim-matchup',
+    dependencies = {
+      {
+
+        'nvim-treesitter/nvim-treesitter',
+        opts = {
+          matchup = {
+            enable = true,
+            -- disable = { "c", "ruby" },  -- optional, list of language that will be disabled
+          },
+        },
+      },
+    },
+  },
+
+  -- { 'tris203/precognition.nvim', opts = {} },
 }

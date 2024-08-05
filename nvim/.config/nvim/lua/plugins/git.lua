@@ -166,6 +166,12 @@ return {
     opts = {},
   },
   {
+    'FabijanZulj/blame.nvim',
+    config = function()
+      require('blame').setup()
+    end,
+  },
+  {
     'echasnovski/mini.clue',
     opts = function(_, opts)
       opts.triggers = opts.triggers or {}
