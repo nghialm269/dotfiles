@@ -5,11 +5,15 @@ return {
     dependencies = { 'nvim-tree/nvim-web-devicons' },
     keys = {
       {
-        '<leader>ff',
-        "<cmd>lua require('fzf-lua').files({ resume = true })<CR>",
-        desc = 'Fuzzy search files (resume)',
+        '<leader>fr',
+        "<cmd>lua require('fzf-lua').resume()<CR>",
+        desc = 'Resume Fuzzy search',
       },
-      { '<leader>fF', "<cmd>lua require('fzf-lua').files()<CR>", desc = 'Fuzzy search files' },
+      {
+        '<leader>ff',
+        "<cmd>lua require('fzf-lua').files()<CR>",
+        desc = 'Fuzzy search files',
+      },
       {
         '<leader>fw',
         "<cmd>lua require('fzf-lua').grep_cword()<CR>",
@@ -17,13 +21,78 @@ return {
       },
       {
         '<leader>fg',
-        "<cmd>lua require('fzf-lua').live_grep_native({ resume = true })<CR>",
-        desc = 'Fuzzy live search (resume)',
+        "<cmd>lua require('fzf-lua').live_grep_native()<CR>",
+        desc = 'Fuzzy live search',
       },
     },
     config = function()
-      -- calling `setup` is optional for customization
-      require('fzf-lua').setup({ 'fzf-native' })
+      local actions = require('fzf-lua.actions')
+
+      require('fzf-lua').setup({
+        'default',
+        fzf_opts = {
+          ['--cycle'] = '',
+        },
+        keymap = {
+          -- Below are the default binds, setting any value in these tables will override
+          -- the defaults, to inherit from the defaults change [1] from `false` to `true`
+          builtin = {
+            false, -- do not inherit from defaults
+            ['<c-f>'] = 'preview-page-down',
+            ['<c-b>'] = 'preview-page-up',
+          },
+          fzf = {
+            false, -- do not inherit from defaults
+            -- fzf '--bind=' options
+            ['ctrl-a'] = 'beginning-of-line',
+            ['ctrl-e'] = 'end-of-line',
+            ['alt-a'] = 'toggle-all',
+            ['alt-g'] = 'last',
+            ['alt-G'] = 'first',
+            ['ctrl-q'] = 'select-all+accept', -- select all and accept (should open quickfix since multiple items are selected)
+            ['ctrl-s'] = 'jump',
+
+            -- Only valid with fzf previewers (bat/cat/git/etc)
+            ['ctrl-u'] = 'half-page-up',
+            ['ctrl-d'] = 'half-page-down',
+            ['ctrl-f'] = 'preview-page-down',
+            ['ctrl-b'] = 'preview-page-up',
+          },
+        },
+        actions = {
+          -- Below are the default actions, setting any value in these tables will override
+          -- the defaults, to inherit from the defaults change [1] from `false` to `true`
+          files = {
+            false, -- do not inherit from defaults
+            -- providers that inherit these actions:
+            --   files, git_files, git_status, grep, lsp
+            --   oldfiles, quickfix, loclist, tags, btags
+            --   args
+            -- default action opens a single selection
+            -- or sends multiple selection to quickfix
+            -- replace the default action with the below
+            -- to open all files whether single or multiple
+            -- ["default"]     = actions.file_edit,
+            ['default'] = actions.file_edit_or_qf,
+            ['ctrl-x'] = actions.file_split,
+            ['ctrl-v'] = actions.file_vsplit,
+            ['ctrl-t'] = actions.file_tabedit,
+            ['alt-q'] = actions.file_sel_to_qf,
+            ['alt-l'] = actions.file_sel_to_ll,
+            ['alt-i'] = actions.toggle_ignore,
+            ['alt-h'] = actions.toggle_hidden,
+          },
+          buffers = {
+            false, -- do not inherit from defaults
+            -- providers that inherit these actions:
+            --   buffers, tabs, lines, blines
+            ['default'] = actions.buf_edit,
+            ['ctrl-x'] = actions.buf_split,
+            ['ctrl-v'] = actions.buf_vsplit,
+            ['ctrl-t'] = actions.buf_tabedit,
+          },
+        },
+      })
     end,
   },
   {

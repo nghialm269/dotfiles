@@ -29,6 +29,7 @@ return {
           },
           fidget = true,
           flash = true,
+          fzf = true,
           gitsigns = true,
           grug_far = true,
           harpoon = true,
@@ -113,7 +114,7 @@ return {
           -- Set to false to disable the vim.ui.select implementation
           enabled = true,
           -- Priority list of preferred vim.select implementations
-          backend = { 'telescope', 'fzf_lua', 'fzf', 'builtin', 'nui' },
+          backend = { 'fzf_lua', 'telescope', 'fzf', 'builtin', 'nui' },
           trim_prompt = true,
           telescope = require('telescope.themes').get_cursor(),
         },
