@@ -599,7 +599,11 @@ return {
   },
 
   -- Detect tabstop and shiftwidth automatically
-  'tpope/vim-sleuth',
+  -- 'tpope/vim-sleuth',
+  {
+    'nmac427/guess-indent.nvim',
+    opts = {},
+  },
 
   'tpope/vim-abolish',
 
@@ -664,6 +668,7 @@ return {
 
   {
     'ThePrimeagen/harpoon',
+    enabled = false,
     branch = 'harpoon2',
     dependencies = { 'nvim-lua/plenary.nvim' },
     config = function()
@@ -696,6 +701,16 @@ return {
         end,
       })
     end,
+  },
+
+  {
+    'otavioschwanck/arrow.nvim',
+    opts = {
+      separate_by_branch = true, -- Bookmarks will be separated by git branch
+      show_icons = true,
+      leader_key = '<Tab>', -- Recommended to be a single key
+      buffer_leader_key = 'm', -- Per Buffer Mappings
+    },
   },
 
   { 'soulis-1256/eagle.nvim', enabled = false, opts = {} },
