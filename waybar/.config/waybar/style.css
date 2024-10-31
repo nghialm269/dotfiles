@@ -38,7 +38,10 @@
 #waybar {
   background: @base;
   color: @text;
-  font-family: Roboto, Noto Sans, sans-serif;
+  font-family:
+    Roboto,
+    Noto Sans,
+    sans-serif;
   font-size: 13px;
 }
 
@@ -175,7 +178,8 @@
   box-shadow: inset 0 -3px @text;
 }
 
-#workspaces button.focused {
+#workspaces button.focused,
+#workspaces button.active {
   background-color: @surface0;
   box-shadow: inset 0 -3px @green;
 }

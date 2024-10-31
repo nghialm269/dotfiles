@@ -1,6 +1,7 @@
 #!/usr/bin/env bash
 
 
+
 # * Install ddcutil:
 #     sudo pacman -S ddcutil
 # * Load i2c-dev module at boot:
@@ -8,6 +9,13 @@
 # * Add user to i2c group (to have permission for using the /dev/i2c-* devices):
 #     sudo gpasswd -a <username> i2c
 # * Reboot.
+
+# kill self
+for pid in $(pgrep -f ${BASH_SOURCE[0]}); do
+    if [ $pid != $$ ]; then
+        kill $pid
+    fi 
+done
 
 MONITOR_MODEL="DELL U2723QE"
 
@@ -28,8 +36,8 @@ set_display_mode() {
 	echo "$display_mode"
 }
 
-get_monitor_name() {
-	swaymsg -t get_outputs | jq -r '.[]|  select(.model=="'"$MONITOR_MODEL"'").name'
+get_monitor_id() {
+	hyprctl -j monitors | jq -r '.[] | select(.model=="'"$MONITOR_MODEL"'").id'
 }
 
 get_mode_name() {
@@ -59,14 +67,15 @@ notify() {
 prev_display_mode=""
 display_mode=""
 
-swaymsg -t subscribe -m '[ "window" ]' | while read -r line ; do 
-	change="$(echo "$line" | jq -r '.change')" 
-	if [ "$change" != "focus" ] && [ "$change" != "fullscreen_mode" ]; then
+socat -u UNIX-CONNECT:$XDG_RUNTIME_DIR/hypr/$HYPRLAND_INSTANCE_SIGNATURE/.socket2.sock - | while read -r line; do
+	event="${line%%>>*}"
+
+	if [ "$event" != "activewindowv2" ] && [ "$event" != "fullscreen" ]; then
 		continue
 	fi
 
-	monitor_name="$(get_monitor_name)"
-	if [ "$monitor_name" = "" ]; then
+	monitor_id="$(get_monitor_id)"
+	if [ "$monitor_id" = "" ]; then
 		prev_display_mode=""
 		display_mode=""
 		continue
@@ -83,13 +92,13 @@ swaymsg -t subscribe -m '[ "window" ]' | while read -r line ; do
 	fi
 
 
-	sway_tree="$(swaymsg -t get_tree)" 
-	output="$(echo "$sway_tree" | jq -r '.nodes[] | select(.name=="'"$monitor_name"'")')"
-	focused_window="$(echo "$output" | jq -r '.. | select(.type?) | select(.focused==true)')"
-	fullscreen_mode="$(echo "$focused_window" | jq -r '.fullscreen_mode')"
-	app_id="$(echo "$focused_window" | jq -r '.app_id')"
+	clients="$(hyprctl -j clients)" 
+	monitor_clients="$(echo "$clients" | jq -r '[.[] | select(.monitor=='"$monitor_id"')]')"
+	focused_client="$(echo "$monitor_clients" | jq -r '.[] | select(.focusHistoryID==0)')"
+	fullscreen="$(echo "$focused_client" | jq -r '.fullscreen')"
+	class="$(echo "$focused_client" | jq -r '.class')"
 
-	if [ "$fullscreen_mode" = "1" ] && [ "$app_id" = "mpv" ]; then
+	if [ "$fullscreen" = "2" ] && [ "$class" = "mpv" ]; then
 		if [ "$display_mode" = "03" ]; then
 			continue
 		fi

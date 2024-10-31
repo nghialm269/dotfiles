@@ -324,7 +324,7 @@ bar {
 #
 exec opensnitch-ui
 exec /usr/lib/geoclue-2.0/demos/agent
-exec gammastep-indicator
+# exec gammastep-indicator
 # exec cmst --minimized --wait-time 5
 exec fcitx5
 exec blueman-applet
@@ -339,7 +339,9 @@ exec_always {
 
 set $terminalScratchpad "Terminal-Scratchpad"
 
-bindsym $mod+Backspace exec swaymsg '[app_id=$terminalScratchpad]' scratchpad show || $(exec $term start --class $terminalScratchpad -- tmux new-session -A -s Scratchpad)
+# bindsym $mod+Backspace exec swaymsg '[app_id=$terminalScratchpad]' scratchpad show || $(exec $term start --class $terminalScratchpad -- tmux new-session -A -s Scratchpad)
+# bindsym $mod+Backspace exec swaymsg '[app_id=$terminalScratchpad]' scratchpad show || $(exec $term start --class $terminalScratchpad --domain scratchpad --attach)
+bindsym $mod+Backspace exec swaymsg '[app_id=$terminalScratchpad]' scratchpad show || $(exec $term start --class $terminalScratchpad --workspace scratchpad)
 
 for_window [app_id=$terminalScratchpad] {
     move scratchpad
