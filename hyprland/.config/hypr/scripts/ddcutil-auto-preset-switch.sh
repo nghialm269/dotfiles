@@ -59,9 +59,25 @@ get_mode_name() {
 	echo "$mode"
 }
 
+get_preferred_mode_for_class() {
+	case "$1" in
+		mpv)
+			mode="03"
+			;;
+		gamescope)
+			mode="05"
+			;;
+		*)
+			mode="00"
+			;;
+	esac
+
+	echo "$mode"
+}
+
 
 notify() {
-	notify-send -u low -i "system-config-display" -h int:transient:1 -h string:x-canonical-private-synchronous:display-preset "$1" "$2"
+	notify-send -u low -i "computer" -h int:transient:1 -h string:x-canonical-private-synchronous:display-preset "$1" "$2"
 }
 
 prev_display_mode=""
@@ -98,15 +114,16 @@ socat -u UNIX-CONNECT:$XDG_RUNTIME_DIR/hypr/$HYPRLAND_INSTANCE_SIGNATURE/.socket
 	fullscreen="$(echo "$focused_client" | jq -r '.fullscreen')"
 	class="$(echo "$focused_client" | jq -r '.class')"
 
-	if [ "$fullscreen" = "2" ] && [ "$class" = "mpv" ]; then
-		if [ "$display_mode" = "03" ]; then
-			continue
-		fi
-
-		prev_display_mode="$display_mode"
-		display_mode="$(set_display_mode "$prev_display_mode" "03")"
-	elif [ "$display_mode" = "03" ]; then
-		prev_display_mode="$display_mode"
-		display_mode="$(set_display_mode "$prev_display_mode" "00")"
+	if [ "$fullscreen" = "2" ]; then
+		preferred_mode="$(get_preferred_mode_for_class "$class")"
+	else
+		preferred_mode="00"
 	fi
+
+	if [ "$preferred_mode" = "$display_mode" ]; then
+		continue
+	fi
+
+	prev_display_mode="$display_mode"
+	display_mode="$(set_display_mode "$prev_display_mode" "$preferred_mode")"
 done

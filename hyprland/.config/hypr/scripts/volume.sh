@@ -16,7 +16,9 @@ mute="$(pactl get-sink-mute @DEFAULT_SINK@ | grep -hPo 'Mute: \K\w+')"
 vol="$(pactl get-sink-volume @DEFAULT_SINK@ | grep -oP '\K\d+(?=%)' | head -n 1)"
 
 icon_muted="audio-volume-muted"
-icon_normal="audio-volume-high"
+icon_low="audio-volume-low"
+icon_medium="audio-volume-medium"
+icon_high="audio-volume-high"
 
 case "$mute" in
     yes)
@@ -25,7 +27,13 @@ case "$mute" in
         ;;
     *)
         title="Volume"
-        icon="$icon_normal"
+        if [ $vol -le 33 ]; then
+            icon="$icon_low"
+        elif [ $vol -le 66 ]; then
+            icon="$icon_medium"
+        else
+            icon="$icon_high"
+        fi
         ;;
 esac
 
