@@ -19,3 +19,6 @@
 [submodule "zsh/.oh-my-zsh-custom/plugins/catppuccin-zsh-syntax-highlighting/zsh-syntax-highlighting"]
 	path = zsh/.oh-my-zsh-custom/plugins/catppuccin-zsh-syntax-highlighting/zsh-syntax-highlighting
 	url = https://github.com/catppuccin/zsh-syntax-highlighting.git
+[submodule "zsh/.oh-my-zsh-custom/plugins/autoupdate"]
+	path = zsh/.oh-my-zsh-custom/plugins/autoupdate
+	url = https://github.com/TamCore/autoupdate-oh-my-zsh-plugins

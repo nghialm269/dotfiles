@@ -81,6 +81,7 @@ plugins=(
 	zsh-autosuggestions
 	catppuccin-zsh-syntax-highlighting
 	zsh-syntax-highlighting
+	autoupdate
 )
 
 source $ZSH/oh-my-zsh.sh
