@@ -64,7 +64,7 @@ get_preferred_mode_for_class() {
 		mpv)
 			mode="03"
 			;;
-		gamescope)
+		gamescope|steam_app_*)
 			mode="05"
 			;;
 		*)
