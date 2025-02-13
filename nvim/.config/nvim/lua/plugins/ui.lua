@@ -65,6 +65,7 @@ return {
           },
           notify = true,
           semantic_tokens = true,
+          snacks = true,
           treesitter = true,
           window_picker = true,
           overseer = true,
@@ -227,27 +228,27 @@ return {
     end,
   },
 
-  { 'hiphish/rainbow-delimiters.nvim' },
-  {
-    'shellRaining/hlchunk.nvim',
-    event = { 'UIEnter' },
-    config = function()
-      require('hlchunk').setup({
-        chunk = {
-          enable = true,
-        },
-        indent = {
-          enable = true,
-        },
-        line_num = {
-          enable = true,
-        },
-        blank = {
-          enable = true,
-        },
-      })
-    end,
-  },
+  -- { 'hiphish/rainbow-delimiters.nvim' },
+  -- {
+  --   'shellRaining/hlchunk.nvim',
+  --   event = { 'UIEnter' },
+  --   config = function()
+  --     require('hlchunk').setup({
+  --       chunk = {
+  --         enable = true,
+  --       },
+  --       indent = {
+  --         enable = true,
+  --       },
+  --       line_num = {
+  --         enable = true,
+  --       },
+  --       blank = {
+  --         enable = true,
+  --       },
+  --     })
+  --   end,
+  -- },
 
   {
     'j-hui/fidget.nvim',

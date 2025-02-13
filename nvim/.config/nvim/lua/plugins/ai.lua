@@ -1,44 +1,73 @@
 return {
-  {
-    'zbirenbaum/copilot.lua',
-    cmd = 'Copilot',
-    event = 'InsertEnter',
-    opts = {
-      suggestion = {
-        enabled = true,
-        accept = '<C-e>',
-        dismiss = '/',
-      },
-      panel = {
-        enabled = true,
-        auto_refresh = true,
-      },
-      copilot_node_command = vim.fn.expand('$HOME')
-        .. '/.local/share/mise/installs/node/lts/bin/node',
-    },
-  },
-  {
-    'CopilotC-Nvim/CopilotChat.nvim',
-    branch = 'canary',
-    dependencies = {
-      { 'zbirenbaum/copilot.lua' },
-      { 'nvim-lua/plenary.nvim' },
-    },
-    opts = {},
-  },
-  {
-    'zbirenbaum/copilot-cmp',
-    dependencies = {
-      {
-        'hrsh7th/nvim-cmp',
-        opts = function(_, opts)
-          opts.sources = opts.sources or {}
-          table.insert(opts.sources, {
-            name = 'copilot',
-          })
-        end,
-      },
-    },
-    opts = {},
-  },
+  -- {
+  --   'zbirenbaum/copilot.lua',
+  --   cmd = 'Copilot',
+  --   event = 'InsertEnter',
+  --   opts = {
+  --     suggestion = {
+  --       enabled = true,
+  --       accept = '<C-e>',
+  --       dismiss = '/',
+  --     },
+  --     panel = {
+  --       enabled = true,
+  --       auto_refresh = true,
+  --     },
+  --     copilot_node_command = vim.fn.expand('$HOME')
+  --       .. '/.local/share/mise/installs/node/lts/bin/node',
+  --   },
+  -- },
+  -- {
+  --   'zbirenbaum/copilot-cmp',
+  --   dependencies = {
+  --     {
+  --       'hrsh7th/nvim-cmp',
+  --       opts = function(_, opts)
+  --         opts.sources = opts.sources or {}
+  --         table.insert(opts.sources, {
+  --           name = 'copilot',
+  --         })
+  --       end,
+  --     },
+  --   },
+  --   opts = {},
+  -- },
+  -- {
+  --   'CopilotC-Nvim/CopilotChat.nvim',
+  --   branch = 'canary',
+  --   dependencies = {
+  --     { 'zbirenbaum/copilot.lua' },
+  --     { 'nvim-lua/plenary.nvim' },
+  --   },
+  --   opts = {},
+  -- },
+  -- {
+  --   'robitx/gp.nvim',
+  --   config = function()
+  --     local conf = {
+  --       providers = {
+  --         openai = {
+  --           disable = true,
+  --         },
+  --         copilot = {
+  --           disable = false,
+  --         },
+  --       },
+  --
+  --       hooks = {
+  --         -- example of adding command which writes unit tests for the selected code
+  --         UnitTests = function(gp, params)
+  --           local template = 'I have the following code from {{filename}}:\n\n'
+  --             .. '```{{filetype}}\n{{selection}}\n```\n\n'
+  --             .. 'Please respond by writing table driven unit tests for the code above.'
+  --           local agent = gp.get_command_agent()
+  --           gp.Prompt(params, gp.Target.vnew, agent, template)
+  --         end,
+  --       },
+  --     }
+  --     require('gp').setup(conf)
+  --
+  --     -- Setup shortcuts here (see Usage > Shortcuts in the Documentation/Readme)
+  --   end,
+  -- },
 }

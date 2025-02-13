@@ -447,36 +447,7 @@ vim.keymap.set(
   vim.diagnostic.open_float,
   { desc = 'Open floating diagnostic message' }
 )
-vim.keymap.set('n', '<leader>dq', vim.diagnostic.setloclist, { desc = 'Open diagnostics list' })
-
--- Enable the following language servers
---  Feel free to add/remove any LSPs that you want here. They will automatically be installed.
---
---  Add any additional override configuration in the following tables. They will be passed to
---  the `settings` field of the server config. You must look up that documentation yourself.
-local servers = {
-  -- clangd = {},
-  gopls = {
-    gopls = {
-      -- ["env"] = {
-      --   GOFLAGS = "-tags=integration",
-      -- },
-      -- ["formatting.local"] = "github.com/koinworks/asgard-koinneo",
-      -- ["formatting.gofumpt"] = true,
-      ['ui.semanticTokens'] = true,
-      ['ui.completion.usePlaceholders'] = true,
-      ['ui.completion.matcher'] = 'Fuzzy',
-      ['ui.diagnostic.staticcheck'] = true,
-      ['ui.diagnostic.analyses'] = {
-        nilness = true,
-        shadow = true,
-        unusedparams = true,
-        unusedwrite = true,
-      },
-    },
-  },
-  pyright = {},
-}
+vim.keymap.set('n', '<leader>dq', vim.diagnostic.setqflist, { desc = 'Open diagnostics list' })
 
 local qf_loclist_group = vim.api.nvim_create_augroup('QFLocListGroup', { clear = true })
 vim.api.nvim_create_autocmd('FileType', {

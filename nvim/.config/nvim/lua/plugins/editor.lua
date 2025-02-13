@@ -81,6 +81,7 @@ return {
             ['alt-l'] = actions.file_sel_to_ll,
             ['alt-i'] = actions.toggle_ignore,
             ['alt-h'] = actions.toggle_hidden,
+            ['ctrl-h'] = actions.toggle_hidden,
           },
           buffers = {
             false, -- do not inherit from defaults
@@ -256,7 +257,7 @@ return {
 
       local map_split = function(buf_id, lhs, direction)
         local rhs = function()
-          local window = minifiles.get_target_window()
+          local window = minifiles.get_explorer_state().target_window
 
           -- Noop if the explorer isn't open or the cursor is on a directory.
           if window == nil or minifiles.get_fs_entry().fs_type == 'directory' then
@@ -281,6 +282,13 @@ return {
         local desc = 'Split ' .. direction
         vim.keymap.set('n', lhs, rhs, { buffer = buf_id, desc = desc })
       end
+
+      vim.api.nvim_create_autocmd('User', {
+        pattern = 'MiniFilesActionRename',
+        callback = function(event)
+          Snacks.rename.on_rename_file(event.data.from, event.data.to)
+        end,
+      })
 
       vim.api.nvim_create_autocmd('User', {
         pattern = 'MiniFilesBufferCreate',
@@ -561,42 +569,42 @@ return {
     end,
   },
 
-  {
-    'RRethy/vim-illuminate',
-    event = { 'BufReadPost', 'BufNewFile' },
-    opts = {
-      delay = 200,
-      large_file_cutoff = 2000,
-      large_file_overrides = {
-        providers = { 'lsp' },
-      },
-    },
-    config = function(_, opts)
-      require('illuminate').configure(opts)
-
-      local function map(key, dir, buffer)
-        vim.keymap.set('n', key, function()
-          require('illuminate')['goto_' .. dir .. '_reference'](false)
-        end, { desc = dir:sub(1, 1):upper() .. dir:sub(2) .. ' Reference', buffer = buffer })
-      end
-
-      map(']]', 'next')
-      map('[[', 'prev')
-
-      -- also set it after loading ftplugins, since a lot overwrite [[ and ]]
-      vim.api.nvim_create_autocmd('FileType', {
-        callback = function()
-          local buffer = vim.api.nvim_get_current_buf()
-          map(']]', 'next', buffer)
-          map('[[', 'prev', buffer)
-        end,
-      })
-    end,
-    keys = {
-      { ']]', desc = 'Next Reference' },
-      { '[[', desc = 'Prev Reference' },
-    },
-  },
+  -- {
+  --   'RRethy/vim-illuminate',
+  --   event = { 'BufReadPost', 'BufNewFile' },
+  --   opts = {
+  --     delay = 200,
+  --     large_file_cutoff = 2000,
+  --     large_file_overrides = {
+  --       providers = { 'lsp' },
+  --     },
+  --   },
+  --   config = function(_, opts)
+  --     require('illuminate').configure(opts)
+  --
+  --     local function map(key, dir, buffer)
+  --       vim.keymap.set('n', key, function()
+  --         require('illuminate')['goto_' .. dir .. '_reference'](false)
+  --       end, { desc = dir:sub(1, 1):upper() .. dir:sub(2) .. ' Reference', buffer = buffer })
+  --     end
+  --
+  --     map(']]', 'next')
+  --     map('[[', 'prev')
+  --
+  --     -- also set it after loading ftplugins, since a lot overwrite [[ and ]]
+  --     vim.api.nvim_create_autocmd('FileType', {
+  --       callback = function()
+  --         local buffer = vim.api.nvim_get_current_buf()
+  --         map(']]', 'next', buffer)
+  --         map('[[', 'prev', buffer)
+  --       end,
+  --     })
+  --   end,
+  --   keys = {
+  --     { ']]', desc = 'Next Reference' },
+  --     { '[[', desc = 'Prev Reference' },
+  --   },
+  -- },
 
   -- Detect tabstop and shiftwidth automatically
   -- 'tpope/vim-sleuth',

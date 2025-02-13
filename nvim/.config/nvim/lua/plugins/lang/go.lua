@@ -22,6 +22,9 @@ return {
       require('go').setup({
         lsp_cfg = true,
         lsp_keymaps = false,
+        diagnostic = {
+          update_in_insert = true,
+        },
       })
 
       local go_format = require('go.format')

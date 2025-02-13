@@ -68,7 +68,7 @@ return {
         sorting = {
           priority_weight = 2,
           comparators = {
-            require('copilot_cmp.comparators').prioritize,
+            -- require('copilot_cmp.comparators').prioritize,
             cmp.config.compare.offset,
             cmp.config.compare.exact,
             -- cmp.config.compare.scopes,
@@ -84,7 +84,7 @@ return {
         formatting = {
           format = require('lspkind').cmp_format({
             mode = 'symbol',
-            symbol_map = { Copilot = '' },
+            -- symbol_map = { Copilot = '' },
             menu = {
               buffer = '[Buffer]',
               nvim_lsp = '[LSP]',
@@ -118,13 +118,13 @@ return {
         end
       end)
 
-      cmp.event:on('menu_opened', function()
-        vim.b.copilot_suggestion_hidden = true
-      end)
-
-      cmp.event:on('menu_closed', function()
-        vim.b.copilot_suggestion_hidden = false
-      end)
+      -- cmp.event:on('menu_opened', function()
+      --   vim.b.copilot_suggestion_hidden = true
+      -- end)
+      --
+      -- cmp.event:on('menu_closed', function()
+      --   vim.b.copilot_suggestion_hidden = false
+      -- end)
     end,
   },
   {
