@@ -5,7 +5,7 @@ return {
     dependencies = {
       'mason.nvim',
       'williamboman/mason-lspconfig.nvim',
-      'hrsh7th/cmp-nvim-lsp',
+      'saghen/blink.cmp',
       {
         'nvimdev/lspsaga.nvim',
         dependencies = { 'nvim-treesitter/nvim-treesitter', 'nvim-tree/nvim-web-devicons' },
@@ -142,13 +142,7 @@ return {
       -- vim.diagnostic.config(vim.deepcopy(opts.diagnostics))
 
       local servers = opts.servers
-      local capabilities = vim.tbl_deep_extend(
-        'force',
-        {},
-        vim.lsp.protocol.make_client_capabilities(),
-        require('cmp_nvim_lsp').default_capabilities(),
-        opts.capabilities or {}
-      )
+      local capabilities = require('blink.cmp').get_lsp_capabilities(opts.capabilities)
 
       local function setup(server)
         local server_opts = vim.tbl_deep_extend('force', {

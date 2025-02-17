@@ -26,9 +26,6 @@ return {
       },
       {
         'folke/lazydev.nvim',
-        dependencies = {
-          'justinsgithub/wezterm-types',
-        },
         ft = 'lua', -- only load on lua files
         opts = {
           library = {
@@ -37,37 +34,36 @@ return {
             -- "~/projects/my-awesome-lib",
 
             -- Or relative, which means they will be resolved from the plugin dir.
-            'lazy.nvim',
             'luvit-meta/library',
             'neotest',
             'plenary',
 
+            { path = 'snacks.nvim', words = { 'Snacks' } },
+            { path = 'lazy.nvim', words = { 'LazyVim' } },
+
             -- It can also be a table with trigger words / mods
             -- Only load luvit types when the `vim.uv` word is found
             { path = 'luvit-meta/library', words = { 'vim%.uv' } },
-
-            -- always load the LazyVim library
-            -- "LazyVim",
-
-            -- Only load the lazyvim library when the `LazyVim` global is found
-            { path = 'LazyVim', words = { 'LazyVim' } },
-
-            -- Load the wezterm types when the `wezterm` module is required
-            -- Needs `justinsgithub/wezterm-types` to be installed
-            { path = 'wezterm-types', mods = { 'wezterm' } },
           },
         },
       },
       { 'Bilal2453/luvit-meta', lazy = true }, -- optional `vim.uv` typings
-      { -- optional completion source for require statements and module annotations
-        'hrsh7th/nvim-cmp',
-        opts = function(_, opts)
-          opts.sources = opts.sources or {}
-          table.insert(opts.sources, {
-            name = 'lazydev',
-            group_index = 0, -- set group index to 0 to skip loading LuaLS completions
-          })
-        end,
+      { -- optional blink completion source for require statements and module annotations
+        'saghen/blink.cmp',
+        opts = {
+          sources = {
+            -- add lazydev to your completion providers
+            default = { 'lazydev' },
+            providers = {
+              lazydev = {
+                name = 'LazyDev',
+                module = 'lazydev.integrations.blink',
+                -- make lazydev completions top priority (see `:h blink.cmp`)
+                score_offset = 100,
+              },
+            },
+          },
+        },
       },
     },
     ft = { 'lua' },

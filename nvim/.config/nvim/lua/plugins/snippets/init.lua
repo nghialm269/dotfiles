@@ -1,6 +1,17 @@
 return {
   {
     'L3MON4D3/LuaSnip',
+    dependencies = {
+      {
+        'rafamadriz/friendly-snippets',
+        config = function()
+          require('luasnip.loaders.from_vscode').lazy_load()
+          require('luasnip.loaders.from_vscode').lazy_load({
+            paths = { vim.fn.stdpath('config') .. '/snippets' },
+          })
+        end,
+      },
+    },
     build = 'make install_jsregexp',
     version = 'v2.*',
     keys = {
@@ -29,28 +40,27 @@ return {
         desc = 'Snippets: Edit (LuaSnip)',
       },
     },
-    opts = {
-      history = true,
-      delete_check_events = 'TextChanged',
-      update_events = 'TextChanged,TextChangedI',
-      store_selection_keys = '<Tab>',
-      ft_func = require('luasnip.extras.filetype_functions').from_pos_or_filetype,
-      ext_opts = {
-        [require('luasnip.util.types').choiceNode] = {
-          active = {
-            virt_text = { { ' ', 'TSTextReference' } },
-          },
-        },
-        [require('luasnip.util.types').insertNode] = {
-          active = {
-            virt_text = { { ' ', 'TSEmphasis' } },
-          },
-        },
-      },
-    },
-    config = function(_, opts)
+    config = function()
       local ls = require('luasnip')
-      ls.setup(opts)
+      ls.setup({
+        history = true,
+        delete_check_events = 'TextChanged',
+        update_events = 'TextChanged,TextChangedI',
+        store_selection_keys = '<Tab>',
+        ft_func = require('luasnip.extras.filetype_functions').from_pos_or_filetype,
+        ext_opts = {
+          [require('luasnip.util.types').choiceNode] = {
+            active = {
+              virt_text = { { ' ', 'TSTextReference' } },
+            },
+          },
+          [require('luasnip.util.types').insertNode] = {
+            active = {
+              virt_text = { { ' ', 'TSEmphasis' } },
+            },
+          },
+        },
+      })
 
       require('luasnip.loaders.from_vscode').lazy_load({
         paths = { vim.fn.stdpath('config') .. '/snippets/vscode' },

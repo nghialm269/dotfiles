@@ -1,131 +1,43 @@
 return {
   {
-    'hrsh7th/nvim-cmp',
-    dependencies = {
-      'hrsh7th/cmp-nvim-lsp',
-      'hrsh7th/cmp-buffer',
-      'hrsh7th/cmp-path',
-      'L3MON4D3/LuaSnip',
-      'saadparwaiz1/cmp_luasnip',
-      'onsails/lspkind.nvim',
+    'saghen/blink.cmp',
+    -- optional: provides snippets for the snippet source
+    -- dependencies = 'rafamadriz/friendly-snippets',
+
+    -- use a release tag to download pre-built binaries
+    version = '*',
+    -- AND/OR build from source, requires nightly: https://rust-lang.github.io/rustup/concepts/channels.html#working-with-nightly-rust
+    -- build = 'cargo build --release',
+    -- If you use nix, you can build from source using latest nightly rust with:
+    -- build = 'nix run .#build-plugin',
+
+    opts_extend = { 'sources.default' },
+
+    ---@module 'blink.cmp'
+    ---@type blink.cmp.Config
+    opts = {
+      -- 'default' for mappings similar to built-in completion
+      -- 'super-tab' for mappings similar to vscode (tab to accept, arrow keys to navigate)
+      -- 'enter' for mappings similar to 'super-tab' but with 'enter' to accept
+      -- See the full "keymap" documentation for information on defining your own keymap.
+      keymap = { preset = 'default' },
+
+      appearance = {
+        -- Set to 'mono' for 'Nerd Font Mono' or 'normal' for 'Nerd Font'
+        -- Adjusts spacing to ensure icons are aligned
+        nerd_font_variant = 'mono',
+      },
+
+      signature = { enabled = true },
+
+      snippets = { preset = 'luasnip' },
+
+      -- Default list of enabled providers defined so that you can extend it
+      -- elsewhere in your config, without redefining it, due to `opts_extend`
+      sources = {
+        default = { 'lsp', 'path', 'snippets', 'buffer' },
+      },
     },
-    config = function(_, opts)
-      local cmp = require('cmp')
-      local luasnip = require('luasnip')
-
-      local has_words_before = function()
-        if vim.api.nvim_get_option_value('buftype', { buf = 0 }) == 'prompt' then
-          return false
-        end
-        local line, col = unpack(vim.api.nvim_win_get_cursor(0))
-        return col ~= 0
-          and vim.api.nvim_buf_get_text(0, line - 1, 0, line - 1, col, {})[1]:match('^%s*$')
-            == nil
-      end
-
-      local sources = opts.sources or {}
-      vim.list_extend(sources, {
-        { name = 'nvim_lsp' },
-        { name = 'luasnip' },
-        { name = 'buffer' },
-        { name = 'path' },
-      })
-
-      cmp.setup({
-        snippet = {
-          expand = function(args)
-            luasnip.lsp_expand(args.body)
-          end,
-        },
-        mapping = cmp.mapping.preset.insert({
-          ['<C-b>'] = cmp.mapping.scroll_docs(-4),
-          ['<C-f>'] = cmp.mapping.scroll_docs(4),
-          ['<C-Space>'] = cmp.mapping.complete({}),
-          ['<CR>'] = cmp.mapping.confirm({
-            behavior = cmp.ConfirmBehavior.Replace,
-            select = true,
-          }),
-          ['<Tab>'] = cmp.mapping(function(fallback)
-            if cmp.visible() and has_words_before() then
-              cmp.select_next_item()
-            elseif luasnip.expand_or_jumpable() then
-              luasnip.expand_or_jump()
-            else
-              fallback()
-            end
-          end, { 'i', 's' }),
-          ['<S-Tab>'] = cmp.mapping(function(fallback)
-            if cmp.visible() and has_words_before() then
-              cmp.select_prev_item()
-            elseif luasnip.jumpable(-1) then
-              luasnip.jump(-1)
-            else
-              fallback()
-            end
-          end, { 'i', 's' }),
-        }),
-        sources = cmp.config.sources(sources),
-        sorting = {
-          priority_weight = 2,
-          comparators = {
-            -- require('copilot_cmp.comparators').prioritize,
-            cmp.config.compare.offset,
-            cmp.config.compare.exact,
-            -- cmp.config.compare.scopes,
-            cmp.config.compare.score,
-            cmp.config.compare.recently_used,
-            cmp.config.compare.locality,
-            cmp.config.compare.kind,
-            -- cmp.config.compare.sort_text,
-            cmp.config.compare.length,
-            cmp.config.compare.order,
-          },
-        },
-        formatting = {
-          format = require('lspkind').cmp_format({
-            mode = 'symbol',
-            -- symbol_map = { Copilot = '' },
-            menu = {
-              buffer = '[Buffer]',
-              nvim_lsp = '[LSP]',
-              luasnip = '[LuaSnip]',
-              nvim_lua = '[Lua]',
-              latex_symbols = '[Latex]',
-              path = '[Path]',
-              copilot = '[Copilot]',
-            },
-          }),
-        },
-        experimental = {
-          ghost_text = true,
-        },
-      })
-
-      local kind = cmp.lsp.CompletionItemKind
-
-      -- Add parenthesis on completion confirmation
-      -- if completion item is method/function and not a snippet
-      cmp.event:on('confirm_done', function(event)
-        local completion_item = event.entry:get_completion_item()
-        local insert_text_format = completion_item.insertTextFormat
-        local completion_kind = completion_item.kind
-        if
-          insert_text_format == cmp.lsp.InsertTextFormat.PlainText
-          and vim.tbl_contains({ kind.Function, kind.Method }, completion_kind)
-        then
-          local left = vim.api.nvim_replace_termcodes('<Left>', true, true, true)
-          vim.api.nvim_feedkeys('()' .. left, 'n', false)
-        end
-      end)
-
-      -- cmp.event:on('menu_opened', function()
-      --   vim.b.copilot_suggestion_hidden = true
-      -- end)
-      --
-      -- cmp.event:on('menu_closed', function()
-      --   vim.b.copilot_suggestion_hidden = false
-      -- end)
-    end,
   },
   {
     'altermo/ultimate-autopair.nvim',

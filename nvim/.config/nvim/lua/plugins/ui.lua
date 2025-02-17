@@ -23,6 +23,7 @@ return {
           percentage = 0.15, -- percentage of the shade to apply to the inactive window
         },
         integrations = {
+          blink_cmp = true,
           dropbar = {
             enabled = true,
             color_mode = true, -- enable color for kind's texts, not just kind's icons
@@ -42,7 +43,6 @@ return {
           neotree = true,
           neogit = true,
           neotest = true,
-          cmp = true,
           dap = true,
           dap_ui = true,
           native_lsp = {
