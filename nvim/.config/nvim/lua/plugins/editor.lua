@@ -493,15 +493,6 @@ return {
       move_cursor = true,
     },
   },
-  -- buffer remove
-  {
-    'echasnovski/mini.bufremove',
-    -- stylua: ignore
-    keys = {
-      { "<leader>bd", function() require("mini.bufremove").delete(0, false) end, desc = "Delete Buffer" },
-      { "<leader>bD", function() require("mini.bufremove").delete(0, true) end, desc = "Delete Buffer (Force)" },
-    },
-  },
   {
     'echasnovski/mini.bracketed',
     version = '*',
@@ -717,7 +708,7 @@ return {
       separate_by_branch = true, -- Bookmarks will be separated by git branch
       show_icons = true,
       leader_key = '<Tab>', -- Recommended to be a single key
-      buffer_leader_key = 'm', -- Per Buffer Mappings
+      buffer_leader_key = 'M', -- Per Buffer Mappings
     },
   },
 

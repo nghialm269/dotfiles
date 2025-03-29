@@ -97,11 +97,9 @@ function HighlightedFoldtext()
   end
 
   local folded = {
-    -- { ' ', 'FoldedIcon' },
-    { ' [', 'FoldedIcon' },
+    { ' ', 'FoldedIcon' },
     { '+' .. vim.v.foldend - vim.v.foldstart .. ' lines', 'FoldedText' },
-    { '] ', 'FoldedIcon' },
-    -- { ' ', 'FoldedIcon' },
+    { ' ', 'FoldedIcon' },
   }
 
   for _, item in ipairs(folded) do
@@ -121,9 +119,10 @@ function HighlightedFoldtext()
 end
 
 local function set_fold_hl()
-  local cl = vim.api.nvim_get_hl(0, { name = 'CursorLineNr' })
-  vim.api.nvim_set_hl(0, 'FoldedIcon', { fg = cl.bg })
-  vim.api.nvim_set_hl(0, 'FoldedText', { bg = cl.bg, fg = cl.fg, italic = true })
+  local nf = vim.api.nvim_get_hl(0, { name = 'NormalFloat', link = false })
+  local comment = vim.api.nvim_get_hl(0, { name = 'Comment', link = false })
+  vim.api.nvim_set_hl(0, 'FoldedIcon', { fg = nf.bg })
+  vim.api.nvim_set_hl(0, 'FoldedText', { bg = nf.bg, fg = comment.fg, italic = true })
 end
 
 set_fold_hl()

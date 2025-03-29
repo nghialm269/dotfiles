@@ -84,45 +84,6 @@ return {
     end,
   },
   {
-    'stevearc/dressing.nvim',
-    dependencies = {
-      'nvim-telescope/telescope.nvim',
-    },
-    config = function()
-      require('dressing').setup({
-        input = {
-          enabled = true,
-          default_prompt = 'Input:',
-          title_pos = 'center',
-          insert_only = false,
-          start_in_insert = true,
-          -- Set to `false` to disable
-          mappings = {
-            n = {
-              ['<Esc>'] = 'Close',
-              ['q'] = 'Close',
-              ['<CR>'] = 'Confirm',
-            },
-            i = {
-              ['<C-c>'] = 'Close',
-              ['<CR>'] = 'Confirm',
-              ['<Up>'] = 'HistoryPrev',
-              ['<Down>'] = 'HistoryNext',
-            },
-          },
-        },
-        select = {
-          -- Set to false to disable the vim.ui.select implementation
-          enabled = true,
-          -- Priority list of preferred vim.select implementations
-          backend = { 'fzf_lua', 'telescope', 'fzf', 'builtin', 'nui' },
-          trim_prompt = true,
-          telescope = require('telescope.themes').get_cursor(),
-        },
-      })
-    end,
-  },
-  {
     'luukvbaal/statuscol.nvim',
     config = function()
       local builtin = require('statuscol.builtin')
@@ -201,16 +162,14 @@ return {
     },
     config = function(_, opts)
       local default_opts = require('dropbar.configs').opts
-      local default_enable = default_opts.general.enable
+      local default_enable = default_opts.bar.enable
       local default_sources = default_opts.bar.sources
 
       require('dropbar').setup({
-        general = {
+        bar = {
           enable = function(buf, win)
             return opts.custom_sources[vim.bo[buf].ft] or default_enable(buf, win)
           end,
-        },
-        bar = {
           sources = function(buf, win)
             local custom_sources = opts.custom_sources[vim.bo[buf].ft]
             if custom_sources then

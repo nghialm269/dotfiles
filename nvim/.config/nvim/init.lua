@@ -209,8 +209,19 @@ require('lazy').setup({
   ui = {
     custom_keys = {
       ['<localleader>d'] = function(plugin)
-        vim.pretty_print(plugin)
+        vim.notify(vim.inspect(plugin), vim.log.levels.INFO, {
+          title = 'Inspect ' .. plugin.name,
+        })
       end,
+      ['<localleader>i'] = {
+        function(plugin)
+          vim.notify(vim.inspect(plugin), vim.log.levels.INFO, {
+            title = 'Inspect ' .. plugin.name,
+            lang = 'lua',
+          })
+        end,
+        desc = 'Inspect Plugin',
+      },
     },
   },
   performance = {

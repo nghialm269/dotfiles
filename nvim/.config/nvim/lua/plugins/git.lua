@@ -6,68 +6,6 @@ return {
     opts = {},
   },
   {
-    'ruifm/gitlinker.nvim',
-    dependencies = 'nvim-lua/plenary.nvim',
-    keys = {
-      {
-        '<leader>gy',
-        function()
-          require('gitlinker').get_buf_range_url('n')
-        end,
-        desc = 'Git: Copy permalinks to the current line',
-      },
-      {
-        mode = { 'v' },
-        '<leader>gy',
-        function()
-          require('gitlinker').get_buf_range_url('v')
-        end,
-        desc = 'Git: Copy permalinks to the selected lines',
-      },
-      {
-        '<leader>go',
-        function()
-          require('gitlinker').get_buf_range_url(
-            'n',
-            { action_callback = require('gitlinker.actions').open_in_browser }
-          )
-        end,
-        desc = 'Git: Open permalinks to the current line',
-      },
-      {
-        mode = { 'v' },
-        '<leader>go',
-        function()
-          require('gitlinker').get_buf_range_url(
-            'v',
-            { action_callback = require('gitlinker.actions').open_in_browser }
-          )
-        end,
-        desc = 'Git: Open permalinks to the selected lines',
-      },
-      {
-        '<leader>gY',
-        function()
-          require('gitlinker').get_repo_url()
-        end,
-        desc = 'Git: Copy repo url',
-      },
-      {
-        '<leader>gO',
-        function()
-          require('gitlinker').get_repo_url({
-            action_callback = require('gitlinker.actions').open_in_browser,
-          })
-        end,
-        desc = 'Git: Open repo url',
-      },
-    },
-    opts = {
-      mappings = nil,
-    },
-  },
-
-  {
     'sindrets/diffview.nvim',
     dependencies = 'nvim-lua/plenary.nvim',
     cmd = { 'DiffviewOpen', 'DiffviewFileHistory' },
