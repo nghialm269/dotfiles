@@ -1,3 +1,4 @@
 theme = catppuccin-mocha
 gtk-titlebar = false
 gtk-tabs-location = bottom
+gtk-single-instance = true
