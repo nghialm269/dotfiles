@@ -10,6 +10,7 @@ return {
       open = function(url) vim.fn.setreg('+', url) end
     }) end, desc = 'Git: Copy permalinks', mode = { 'n', 'v' }, },
     { '<leader>go', function() Snacks.gitbrowse() end, desc = 'Git: Open permalinks', mode = { 'n', 'v' }, },
+    { '<leader>no', function() Snacks.notifier.show_history() end, desc = 'Snacks: Show notification history' },
   },
   ---@type snacks.Config
   opts = {
@@ -24,7 +25,7 @@ return {
       },
     },
     picker = { enabled = true },
-    notifier = { enabled = true },
+    notifier = {},
     quickfile = { enabled = true },
     scope = { enabled = true },
     scroll = { enabled = true },

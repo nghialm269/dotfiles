@@ -25,10 +25,10 @@ return {
     'neovim/nvim-lspconfig',
     dependencies = {
       {
-        'williamboman/mason-lspconfig.nvim',
+        'mason-org/mason-lspconfig.nvim',
         dependencies = {
           {
-            'williamboman/mason.nvim',
+            'mason-org/mason.nvim',
           },
         },
         opts = function(_, opts)

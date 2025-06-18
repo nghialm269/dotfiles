@@ -63,14 +63,13 @@ return {
     },
 
     {
-      'echasnovski/mini.clue',
-      opts = function(_, opts)
-        opts.clues = opts.clues or {}
-        vim.list_extend(opts.clues, {
-          { mode = 'n', keys = '<localleader>d', desc = '+debug' },
-          { mode = 'n', keys = '<localleader>da', desc = '+adapters' },
-        })
-      end,
+      'folke/which-key.nvim',
+      opts = {
+        spec = {
+          { '<localleader>d', group = 'debug' },
+          { '<localleader>da', group = 'adapters' },
+        },
+      },
     },
 
     -- hydra integration

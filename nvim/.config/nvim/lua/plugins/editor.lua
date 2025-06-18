@@ -96,133 +96,133 @@ return {
       })
     end,
   },
-  {
-    'echasnovski/mini.clue',
-    event = 'VeryLazy',
-    opts = function(_, opts)
-      local miniclue = require('mini.clue')
-      -- Add a-z/A-Z marks.
-      local function generate_mark_clues()
-        local marks = {}
-        vim.list_extend(marks, vim.fn.getmarklist(vim.api.nvim_get_current_buf()))
-        vim.list_extend(marks, vim.fn.getmarklist())
-
-        local res = {}
-        for _, mark in ipairs(marks) do
-          local key = mark.mark:sub(2, 2)
-
-          -- Just look at letter marks.
-          if not string.match(key, '^%a') then
-            return nil
-          end
-
-          -- For global marks, use the file as a description.
-          -- For local marks, use the line number and content.
-          local desc
-          if mark.file then
-            desc = vim.fn.fnamemodify(mark.file, ':p:~:.')
-          elseif mark.pos[1] and mark.pos[1] ~= 0 then
-            local line_num = mark.pos[2]
-            local lines = vim.fn.getbufline(mark.pos[1], line_num)
-            if lines and lines[1] then
-              desc = string.format('%d: %s', line_num, lines[1]:gsub('^%s*', ''))
-            end
-          end
-
-          if desc then
-            table.insert(res, { mode = 'n', keys = string.format("'%s", key), desc = desc })
-            table.insert(res, { mode = 'n', keys = string.format('`%s', key), desc = desc })
-          end
-        end
-
-        return res
-      end
-
-      -- Clues for recorded macros.
-      local function generate_macro_clues()
-        local res = {}
-        for _, register in ipairs(vim.split('abcdefghijklmnopqrstuvwxyz', '')) do
-          local keys = string.format('"%s', register)
-          local ok, desc = pcall(vim.fn.getreg, register, 1)
-          if ok and desc ~= '' then
-            table.insert(res, { mode = 'n', keys = keys, desc = desc })
-            table.insert(res, { mode = 'v', keys = keys, desc = desc })
-          end
-        end
-
-        return res
-      end
-
-      return {
-        triggers = {
-          -- `g` key
-          { mode = 'n', keys = 'g' },
-          { mode = 'x', keys = 'g' },
-          -- marks
-          { mode = 'n', keys = "'" },
-          { mode = 'x', keys = "'" },
-          { mode = 'n', keys = '`' },
-          { mode = 'x', keys = '`' },
-          -- registers
-          { mode = 'n', keys = '"' },
-          { mode = 'x', keys = '"' },
-          { mode = 'i', keys = '<C-r>' },
-          { mode = 'c', keys = '<C-r>' },
-          -- window commands
-          { mode = 'n', keys = '<C-w>' },
-          -- `z` key
-          { mode = 'n', keys = 'z' },
-          { mode = 'x', keys = 'z' },
-          -- Leader triggers.
-          { mode = 'n', keys = '<leader>' },
-          { mode = 'x', keys = '<leader>' },
-          { mode = 'n', keys = '<localleader>' },
-          { mode = 'x', keys = '<localleader>' },
-        },
-        clues = {
-          -- Leader/movement groups.
-          { mode = 'n', keys = '<leader>b', desc = '+buffers' },
-          { mode = 'n', keys = '<leader>d', desc = '+diagnostics' },
-          { mode = 'n', keys = '<leader>e', desc = '+explorer' },
-          { mode = 'n', keys = '<leader>f', desc = '+find' },
-          { mode = 'n', keys = '<leader>h', desc = '+find & replace' },
-          { mode = 'n', keys = '<leader>m', desc = '+marks' },
-          { mode = 'n', keys = '<leader>n', desc = '+notifications' },
-          { mode = 'n', keys = '<leader>t', desc = '+tasks (overseer)' },
-          { mode = 'n', keys = '[', desc = '+prev' },
-          { mode = 'n', keys = ']', desc = '+next' },
-          miniclue.gen_clues.g(),
-          miniclue.gen_clues.marks(),
-          miniclue.gen_clues.registers(),
-          miniclue.gen_clues.windows(),
-          miniclue.gen_clues.z(),
-          -- Custom extras.
-          generate_mark_clues,
-          generate_macro_clues,
-        },
-        window = {
-          delay = 500,
-          scroll_down = '<C-f>',
-          scroll_up = '<C-b>',
-          config = function(bufnr)
-            local max_width = 0
-            for _, line in ipairs(vim.api.nvim_buf_get_lines(bufnr, 0, -1, false)) do
-              max_width = math.max(max_width, vim.fn.strchars(line))
-            end
-
-            -- Keep some right padding.
-            max_width = max_width + 2
-
-            return {
-              border = 'rounded',
-              -- Dynamic width capped at 45.
-              width = math.min(45, max_width),
-            }
-          end,
-        },
-      }
-    end,
-  },
+  -- {
+  --   'echasnovski/mini.clue',
+  --   event = 'VeryLazy',
+  --   opts = function(_, opts)
+  --     local miniclue = require('mini.clue')
+  --     -- Add a-z/A-Z marks.
+  --     local function generate_mark_clues()
+  --       local marks = {}
+  --       vim.list_extend(marks, vim.fn.getmarklist(vim.api.nvim_get_current_buf()))
+  --       vim.list_extend(marks, vim.fn.getmarklist())
+  --
+  --       local res = {}
+  --       for _, mark in ipairs(marks) do
+  --         local key = mark.mark:sub(2, 2)
+  --
+  --         -- Just look at letter marks.
+  --         if not string.match(key, '^%a') then
+  --           return nil
+  --         end
+  --
+  --         -- For global marks, use the file as a description.
+  --         -- For local marks, use the line number and content.
+  --         local desc
+  --         if mark.file then
+  --           desc = vim.fn.fnamemodify(mark.file, ':p:~:.')
+  --         elseif mark.pos[1] and mark.pos[1] ~= 0 then
+  --           local line_num = mark.pos[2]
+  --           local lines = vim.fn.getbufline(mark.pos[1], line_num)
+  --           if lines and lines[1] then
+  --             desc = string.format('%d: %s', line_num, lines[1]:gsub('^%s*', ''))
+  --           end
+  --         end
+  --
+  --         if desc then
+  --           table.insert(res, { mode = 'n', keys = string.format("'%s", key), desc = desc })
+  --           table.insert(res, { mode = 'n', keys = string.format('`%s', key), desc = desc })
+  --         end
+  --       end
+  --
+  --       return res
+  --     end
+  --
+  --     -- Clues for recorded macros.
+  --     local function generate_macro_clues()
+  --       local res = {}
+  --       for _, register in ipairs(vim.split('abcdefghijklmnopqrstuvwxyz', '')) do
+  --         local keys = string.format('"%s', register)
+  --         local ok, desc = pcall(vim.fn.getreg, register, 1)
+  --         if ok and desc ~= '' then
+  --           table.insert(res, { mode = 'n', keys = keys, desc = desc })
+  --           table.insert(res, { mode = 'v', keys = keys, desc = desc })
+  --         end
+  --       end
+  --
+  --       return res
+  --     end
+  --
+  --     return {
+  --       triggers = {
+  --         -- `g` key
+  --         { mode = 'n', keys = 'g' },
+  --         { mode = 'x', keys = 'g' },
+  --         -- marks
+  --         { mode = 'n', keys = "'" },
+  --         { mode = 'x', keys = "'" },
+  --         { mode = 'n', keys = '`' },
+  --         { mode = 'x', keys = '`' },
+  --         -- registers
+  --         { mode = 'n', keys = '"' },
+  --         { mode = 'x', keys = '"' },
+  --         { mode = 'i', keys = '<C-r>' },
+  --         { mode = 'c', keys = '<C-r>' },
+  --         -- window commands
+  --         { mode = 'n', keys = '<C-w>' },
+  --         -- `z` key
+  --         { mode = 'n', keys = 'z' },
+  --         { mode = 'x', keys = 'z' },
+  --         -- Leader triggers.
+  --         { mode = 'n', keys = '<leader>' },
+  --         { mode = 'x', keys = '<leader>' },
+  --         { mode = 'n', keys = '<localleader>' },
+  --         { mode = 'x', keys = '<localleader>' },
+  --       },
+  --       clues = {
+  --         -- Leader/movement groups.
+  --         { mode = 'n', keys = '<leader>b', desc = '+buffers' },
+  --         { mode = 'n', keys = '<leader>d', desc = '+diagnostics' },
+  --         { mode = 'n', keys = '<leader>e', desc = '+explorer' },
+  --         { mode = 'n', keys = '<leader>f', desc = '+find' },
+  --         { mode = 'n', keys = '<leader>h', desc = '+find & replace' },
+  --         { mode = 'n', keys = '<leader>m', desc = '+marks' },
+  --         { mode = 'n', keys = '<leader>n', desc = '+notifications' },
+  --         { mode = 'n', keys = '<leader>t', desc = '+tasks (overseer)' },
+  --         { mode = 'n', keys = '[', desc = '+prev' },
+  --         { mode = 'n', keys = ']', desc = '+next' },
+  --         miniclue.gen_clues.g(),
+  --         miniclue.gen_clues.marks(),
+  --         miniclue.gen_clues.registers(),
+  --         miniclue.gen_clues.windows(),
+  --         miniclue.gen_clues.z(),
+  --         -- Custom extras.
+  --         generate_mark_clues,
+  --         generate_macro_clues,
+  --       },
+  --       window = {
+  --         delay = 500,
+  --         scroll_down = '<C-f>',
+  --         scroll_up = '<C-b>',
+  --         config = function(bufnr)
+  --           local max_width = 0
+  --           for _, line in ipairs(vim.api.nvim_buf_get_lines(bufnr, 0, -1, false)) do
+  --             max_width = math.max(max_width, vim.fn.strchars(line))
+  --           end
+  --
+  --           -- Keep some right padding.
+  --           max_width = max_width + 2
+  --
+  --           return {
+  --             border = 'rounded',
+  --             -- Dynamic width capped at 45.
+  --             width = math.min(45, max_width),
+  --           }
+  --         end,
+  --       },
+  --     }
+  --   end,
+  -- },
   {
     'echasnovski/mini.files',
     version = '*',
@@ -479,6 +479,7 @@ return {
       },
     },
   },
+
   {
     'mizlan/iswap.nvim',
     dependencies = { 'nvim-treesitter/nvim-treesitter', 'tpope/vim-repeat' },
@@ -492,33 +493,6 @@ return {
       autoswap = true,
       move_cursor = true,
     },
-  },
-  {
-    'echasnovski/mini.bracketed',
-    version = '*',
-    dependencies = {
-      {
-        'echasnovski/mini.clue',
-        opts = function(_, opts)
-          opts.triggers = opts.triggers or {}
-          vim.list_extend(opts.triggers, {
-            { mode = 'n', keys = ']' },
-            { mode = 'n', keys = '[' },
-          })
-
-          opts.clues = opts.clues or {}
-          vim.list_extend(opts.clues, {
-            { mode = 'n', keys = ']d', postkeys = ']' },
-            { mode = 'n', keys = '[d', postkeys = '[' },
-            { mode = 'n', keys = ']q', postkeys = ']' },
-            { mode = 'n', keys = '[q', postkeys = '[' },
-            { mode = 'n', keys = ']l', postkeys = ']' },
-            { mode = 'n', keys = '[l', postkeys = '[' },
-          })
-        end,
-      },
-    },
-    opts = {},
   },
 
   {

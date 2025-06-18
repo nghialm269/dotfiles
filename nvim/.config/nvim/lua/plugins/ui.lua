@@ -28,7 +28,6 @@ return {
             enabled = true,
             color_mode = true, -- enable color for kind's texts, not just kind's icons
           },
-          fidget = true,
           flash = true,
           fzf = true,
           gitsigns = true,
@@ -65,7 +64,9 @@ return {
           },
           notify = true,
           semantic_tokens = true,
-          snacks = true,
+          snacks = {
+            enabled = true,
+          },
           treesitter = true,
           window_picker = true,
           overseer = true,
@@ -75,8 +76,7 @@ return {
             style = 'nvchad',
           },
           lsp_trouble = true,
-          illuminate = true,
-          which_key = false,
+          which_key = true,
         },
       })
 
@@ -209,33 +209,34 @@ return {
   --   end,
   -- },
 
-  {
-    'j-hui/fidget.nvim',
-    config = function()
-      local fidget = require('fidget')
-      local display = require('fidget.progress.display')
-      fidget.setup({
-        progress = {
-          -- ignore_done_already = true,
-          display = {
-            format_message = function(msg)
-              if msg.lsp_client.config.name == 'null-ls' and msg.title == 'code_action' then
-                -- vim.notify(vim.inspect(msg))
-                return nil
-              end
-              return display.default_format_message(msg)
-            end,
-          },
-        },
-        notification = {
-          override_vim_notify = true,
-          window = {
-            winblend = 0,
-          },
-        },
-      })
-    end,
-  },
+  -- {
+  --   'j-hui/fidget.nvim',
+  --   config = function()
+  --     local fidget = require('fidget')
+  --     local display = require('fidget.progress.display')
+  --     fidget.setup({
+  --       progress = {
+  --         -- ignore_done_already = true,
+  --         display = {
+  --           format_message = function(msg)
+  --             if msg.lsp_client.config.name == 'null-ls' and msg.title == 'code_action' then
+  --               -- vim.notify(vim.inspect(msg))
+  --               return nil
+  --             end
+  --             return display.default_format_message(msg)
+  --           end,
+  --         },
+  --       },
+  --       notification = {
+  --         override_vim_notify = true,
+  --         window = {
+  --           winblend = 0,
+  --         },
+  --       },
+  --     })
+  --   end,
+  -- },
+
   {
     'rasulomaroff/reactive.nvim',
     dependencies = {

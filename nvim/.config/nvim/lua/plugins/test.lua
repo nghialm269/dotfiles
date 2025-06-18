@@ -115,12 +115,11 @@ return {
     },
   },
   {
-    'echasnovski/mini.clue',
-    opts = function(_, opts)
-      opts.clues = opts.clues or {}
-      vim.list_extend(opts.clues, {
-        { mode = 'n', keys = '<localleader>t', desc = '+test' },
-      })
-    end,
+    'folke/which-key.nvim',
+    opts = {
+      spec = {
+        { '<localleader>t', group = 'test' },
+      },
+    },
   },
 }

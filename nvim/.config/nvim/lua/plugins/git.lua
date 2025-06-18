@@ -82,14 +82,24 @@ return {
       {
         '[h',
         function()
-          require('gitsigns').prev_hunk()
+          local gs = require('gitsigns')
+          if vim.wo.diff then
+            vim.cmd.normal({ '[c', bang = true })
+          else
+            gs.nav_hunk('prev')
+          end
         end,
         desc = 'Git: gitsigns: prev hunk',
       },
       {
         ']h',
         function()
-          require('gitsigns').next_hunk()
+          local gs = require('gitsigns')
+          if vim.wo.diff then
+            vim.cmd.normal({ ']c', bang = true })
+          else
+            gs.nav_hunk('next')
+          end
         end,
         desc = 'Git: gitsigns: next hunk',
       },
@@ -110,23 +120,14 @@ return {
     end,
   },
   {
-    'echasnovski/mini.clue',
-    opts = function(_, opts)
-      opts.triggers = opts.triggers or {}
-      vim.list_extend(opts.triggers, {
-        { mode = 'n', keys = ']' },
-        { mode = 'n', keys = '[' },
-      })
-
-      opts.clues = opts.clues or {}
-      vim.list_extend(opts.clues, {
-        { mode = 'n', keys = '<leader>g', desc = '+git' },
-        { mode = 'n', keys = '<leader>gd', desc = '+diff' },
-        { mode = 'n', keys = '<leader>gdh', desc = '+history' },
-        { mode = 'n', keys = '<leader>gdr', desc = '+review' },
-        { mode = 'n', keys = ']h', postkeys = ']' },
-        { mode = 'n', keys = '[h', postkeys = '[' },
-      })
-    end,
+    'folke/which-key.nvim',
+    opts = {
+      spec = {
+        { '<leader>g', group = 'git' },
+        { '<leader>gd', group = 'diff' },
+        { '<leader>gdh', group = 'history' },
+        { '<leader>gdr', group = 'review' },
+      },
+    },
   },
 }

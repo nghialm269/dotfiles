@@ -80,6 +80,8 @@ vim.opt.foldmethod = 'expr'
 vim.opt.foldexpr = 'v:lua.vim.treesitter.foldexpr()'
 vim.opt.foldtext = require('foldtext')
 
+vim.o.winborder = 'rounded'
+
 vim.g.clipboard = {
   name = 'OSC 52',
   copy = {
@@ -112,6 +114,14 @@ if not vim.loop.fs_stat(lazypath) then
   })
 end
 vim.opt.rtp:prepend(lazypath)
+
+_G.dd = function(...)
+  Snacks.debug.inspect(...)
+end
+_G.bt = function()
+  Snacks.debug.backtrace()
+end
+vim.print = _G.dd
 
 require('lazy').setup({
 
@@ -208,17 +218,9 @@ require('lazy').setup({
 }, {
   ui = {
     custom_keys = {
-      ['<localleader>d'] = function(plugin)
-        vim.notify(vim.inspect(plugin), vim.log.levels.INFO, {
-          title = 'Inspect ' .. plugin.name,
-        })
-      end,
       ['<localleader>i'] = {
         function(plugin)
-          vim.notify(vim.inspect(plugin), vim.log.levels.INFO, {
-            title = 'Inspect ' .. plugin.name,
-            lang = 'lua',
-          })
+          dd(plugin)
         end,
         desc = 'Inspect Plugin',
       },
@@ -430,28 +432,24 @@ vim.diagnostic.config({
   float = {
     source = true,
   },
+  virtual_lines = {
+    -- Only show virtual line diagnostics for the current cursor line
+    current_line = true,
+  },
+  underline = true,
+  update_in_insert = false,
   severity_sort = true,
+
+  signs = {
+    text = {
+      [vim.diagnostic.severity.ERROR] = '',
+      [vim.diagnostic.severity.WARN] = '',
+      [vim.diagnostic.severity.HINT] = '',
+      [vim.diagnostic.severity.INFO] = '',
+    },
+  },
 })
 
-vim.fn.sign_define(
-  'DiagnosticSignError',
-  { text = '', texthl = 'DiagnosticSignError', linehl = '', numhl = '' }
-)
-vim.fn.sign_define(
-  'DiagnosticSignWarn',
-  { text = '', texthl = 'DiagnosticSignWarn', linehl = '', numhl = '' }
-)
-vim.fn.sign_define(
-  'DiagnosticSignInfo',
-  { text = '', texthl = 'DiagnosticSignInfo', linehl = '', numhl = '' }
-)
-vim.fn.sign_define(
-  'DiagnosticSignHint',
-  { text = '', texthl = 'DiagnosticSignHint', linehl = '', numhl = '' }
-)
-
-vim.keymap.set('n', '[d', vim.diagnostic.goto_prev, { desc = 'Go to previous diagnostic message' })
-vim.keymap.set('n', ']d', vim.diagnostic.goto_next, { desc = 'Go to next diagnostic message' })
 vim.keymap.set(
   'n',
   '<leader>do',
@@ -478,7 +476,7 @@ vim.api.nvim_create_autocmd('FileType', {
         elseif buftype == 'loclist' then
           vim.cmd('ll ' .. line_nr)
         else -- should never happen
-          vim.notify('Unknown buftype: ' .. buftype, 'warn')
+          vim.notify('Unknown buftype: ' .. buftype, vim.log.levels.WARN)
         end
       end)
     end, { silent = true, buffer = ev.buf })
