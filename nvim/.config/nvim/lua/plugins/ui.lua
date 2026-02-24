@@ -33,7 +33,6 @@ return {
           gitsigns = true,
           grug_far = true,
           harpoon = true,
-          lsp_saga = true,
           mason = true,
           mini = {
             enabled = true,
@@ -71,10 +70,6 @@ return {
           window_picker = true,
           overseer = true,
           rainbow_delimiters = true,
-          telescope = {
-            enabled = true,
-            style = 'nvchad',
-          },
           lsp_trouble = true,
           which_key = true,
         },

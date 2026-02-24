@@ -6,26 +6,6 @@ return {
       'mason.nvim',
       'mason-org/mason-lspconfig.nvim',
       'saghen/blink.cmp',
-      {
-        'nvimdev/lspsaga.nvim',
-        dependencies = { 'nvim-treesitter/nvim-treesitter', 'nvim-tree/nvim-web-devicons' },
-        opts = {
-          symbol_in_winbar = { enable = false },
-          finder = {
-            max_height = 0.6,
-            keys = {
-              toggle_or_open = '<CR>',
-              vsplit = '<C-v>',
-              split = '<C-x>',
-              tabnew = '<C-t>',
-            },
-            methods = {
-              tyd = 'textDocument/typeDefinition',
-            },
-            default = 'imp+ref+def+tyd',
-          },
-        },
-      },
     },
     ---@class PluginLspOpts
     opts = {
@@ -158,10 +138,10 @@ return {
             return
           end
         end
-        require('lspconfig')[server].setup(server_opts)
+        vim.lsp.enable(server)
       end
 
-      -- get all the servers that are available thourgh mason-lspconfig
+      -- get all the servers that are available through mason-lspconfig
       local have_mason, mlsp = pcall(require, 'mason-lspconfig')
       local all_mslp_servers = {}
       if have_mason then
@@ -247,6 +227,7 @@ return {
 
   {
     'mason-org/mason.nvim',
+    enabled = not vim.env.NIX_NEOVIM,
     cmd = 'Mason',
     opts = {
       ensure_installed = {},
@@ -316,6 +297,6 @@ return {
   },
 
   -- pin to v1 for nowAdd commentMore actions
-  { 'mason-org/mason.nvim', version = '^1.0.0' },
-  { 'mason-org/mason-lspconfig.nvim', version = '^1.0.0' },
+  { 'mason-org/mason.nvim', enabled = not vim.env.NIX_NEOVIM, version = '^1.0.0' },
+  { 'mason-org/mason-lspconfig.nvim', enabled = not vim.env.NIX_NEOVIM, version = '^1.0.0' },
 }

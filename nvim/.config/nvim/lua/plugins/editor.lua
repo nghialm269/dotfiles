@@ -9,21 +9,21 @@ return {
         "<cmd>lua require('fzf-lua').resume()<CR>",
         desc = 'Resume Fuzzy search',
       },
-      {
-        '<leader>ff',
-        "<cmd>lua require('fzf-lua').files()<CR>",
-        desc = 'Fuzzy search files',
-      },
+      -- {
+      --   '<leader>ff',
+      --   "<cmd>lua require('fzf-lua').files()<CR>",
+      --   desc = 'Fuzzy search files',
+      -- },
       {
         '<leader>fw',
         "<cmd>lua require('fzf-lua').grep_cword()<CR>",
         desc = 'Fuzzy search word under cursor',
       },
-      {
-        '<leader>fg',
-        "<cmd>lua require('fzf-lua').live_grep_native()<CR>",
-        desc = 'Fuzzy live search',
-      },
+      -- {
+      --   '<leader>fg',
+      --   "<cmd>lua require('fzf-lua').live_grep_native()<CR>",
+      --   desc = 'Fuzzy live search',
+      -- },
     },
     config = function()
       local actions = require('fzf-lua.actions')
